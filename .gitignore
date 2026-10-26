@@ -1,0 +1,21 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userprefs
+
+# Resultados de compilación
+[Bb]in/
+[Oo]bj/
+
+# Paquetes y herramientas
+packages/
+*.nupkg
+.vscode/
+
+# Archivos del sistema
+Thumbs.db
+.DS_Store
+
+# PDFs generados al probar la aplicación
+*.pdf
