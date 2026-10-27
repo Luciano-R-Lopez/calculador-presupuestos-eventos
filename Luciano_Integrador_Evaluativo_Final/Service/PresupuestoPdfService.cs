@@ -102,6 +102,18 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
                 _y += 10;
             }
 
+            // Ítems de cualquier otro tipo: el PDF los detalla con la Descripcion y el monto que cada uno
+            // informa a través de IItemPresupuesto, sin conocer su clase concreta.
+            if (presupuesto.ItemsExtra.Count > 0)
+            {
+                Escribir("Otros ítems", _fuenteNegrita);
+                foreach (IItemPresupuesto extra in presupuesto.ItemsExtra)
+                {
+                    Escribir(extra.Descripcion + " - " + extra.CalcularMonto().ToString("C"), _fuenteNormal);
+                }
+                _y += 10;
+            }
+
             Escribir("TOTAL: " + presupuesto.MontoTotal.ToString("C"), _fuenteTitulo);
 
             // Dispose libera el objeto de dibujo de la página; debe hacerse antes de guardar para

@@ -5,7 +5,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
 {
     // Servicio extra que se puede sumar a un presupuesto: tiene una descripción (nombre) y un monto fijo,
     // que no depende del lugar, del menú ni de la cantidad de invitados.
-    internal class ServicioAdicional
+    internal class ServicioAdicional : IItemPresupuesto
     {
         private int _id;
         private string _nombre;
@@ -53,6 +53,26 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         public override string ToString()
         {
             return Nombre;
+        }
+
+        // --- Implementación de IItemPresupuesto: el servicio adicional es un ítem más del presupuesto ---
+
+        // Cómo se detalla el servicio en el presupuesto: su nombre.
+        public string Descripcion
+        {
+            get { return Nombre; }
+        }
+
+        // El servicio suma su monto fijo.
+        public decimal CalcularMonto()
+        {
+            return Precio;
+        }
+
+        // Copia del servicio, como ítem del presupuesto.
+        public IItemPresupuesto CopiarItem()
+        {
+            return Copiar();
         }
     }
 }

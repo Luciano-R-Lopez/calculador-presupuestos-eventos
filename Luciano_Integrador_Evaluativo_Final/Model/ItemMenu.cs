@@ -5,7 +5,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
 {
     // Renglón de un presupuesto: un menú elegido, para una cantidad de invitados (adultos o niños).
     // Su monto es la cantidad de invitados por el costo del menú.
-    internal class ItemMenu
+    internal class ItemMenu : IItemPresupuesto
     {
         private int _id;
         private int _cantidad;
@@ -62,6 +62,28 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         {
             MontoTotal = Cantidad * Item.CalcularMonto();
             return MontoTotal;
+        }
+
+        // --- Implementación de IItemPresupuesto (el CalcularMonto de arriba ya cumple con la interfaz) ---
+
+        // Cómo se detalla el ítem en el presupuesto: el menú, la cantidad de invitados y si son adultos o niños.
+        public string Descripcion
+        {
+            get
+            {
+                string destino = "niños";
+                if (ParaAdulto)
+                {
+                    destino = "adultos";
+                }
+                return Item.Nombre + " - " + Cantidad + " " + destino;
+            }
+        }
+
+        // Copia del ítem, con una copia del menú.
+        public IItemPresupuesto CopiarItem()
+        {
+            return new ItemMenu(Id, Cantidad, Item.Copiar(), ParaAdulto);
         }
     }
 }

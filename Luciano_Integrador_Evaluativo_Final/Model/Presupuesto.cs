@@ -5,6 +5,8 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
 {
     // Presupuesto de un evento. Reúne el cliente, el lugar, los servicios adicionales y los menús,
     // y calcula el monto total. Es un registro: guarda COPIAS de esos datos tal como estaban al generarlo.
+    // Todo lo que se cobra (lugar, servicios, menús y otros ítems) es un IItemPresupuesto, y el monto se
+    // calcula recorriéndolos sin importar de qué tipo sea cada uno.
     internal class Presupuesto
     {
         private int _id;
@@ -20,6 +22,11 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         private Cliente? _cliente;
         private LugarEvento? _lugar;
         private List<ItemMenu> _menus;
+
+        // Ítems de cualquier otro tipo que se cobren en el presupuesto (por ejemplo, un transporte).
+        // Son IItemPresupuesto: el presupuesto no necesita conocer su clase concreta para sumarlos,
+        // clonarlos ni detallarlos. Hoy no se carga ninguno; queda listo para sumar tipos nuevos.
+        private List<IItemPresupuesto> _itemsExtra;
         private decimal _montoTotal;
 
         // Crea un presupuesto vacío: estado Nuevo, fecha de creación de ahora y listas sin elementos.
@@ -30,6 +37,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             Estado = EstadoPresupuesto.Nuevo;
             _serviciosAdicionales = new List<ServicioAdicional>();
             _menus = new List<ItemMenu>();
+            _itemsExtra = new List<IItemPresupuesto>();
         }
 
         // Propiedades: dan acceso a los campos privados. Las listas (servicios y menús) solo tienen get:
@@ -77,33 +85,52 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         {
             get { return _menus; }
         }
+        public List<IItemPresupuesto> ItemsExtra
+        {
+            get { return _itemsExtra; }
+        }
         public decimal MontoTotal
         {
             get { return _montoTotal; }
             set { _montoTotal = value; }
         }
 
-        // Monto = lugar (costo base) + servicios adicionales (montos fijos) + menús (por invitado).
-        // Según la consigna, la cantidad de horas NO entra en el cálculo.
-        public decimal CalcularMonto()
+        // Reúne en una sola lista todo lo que se cobra en el presupuesto: el lugar (si ya se eligió),
+        // los servicios adicionales, los menús y los ítems extra. Es una lista nueva cada vez: sirve para
+        // recorrerla, no para modificar el presupuesto.
+        public List<IItemPresupuesto> ObtenerItems()
         {
-            decimal total = 0;
+            List<IItemPresupuesto> items = new List<IItemPresupuesto>();
 
-            // Como _lugar puede ser null, solo se suma su precio si existe.
+            // Como _lugar puede ser null, solo se incluye si existe.
             // Evita un error al calcular con un presupuesto todavía incompleto.
             if (_lugar != null)
             {
-                total += _lugar.Precio;
+                items.Add(_lugar);
             }
-
             foreach (ServicioAdicional servicio in _serviciosAdicionales)
             {
-                total += servicio.Precio;
+                items.Add(servicio);
             }
+            foreach (ItemMenu menu in _menus)
+            {
+                items.Add(menu);
+            }
+            foreach (IItemPresupuesto extra in _itemsExtra)
+            {
+                items.Add(extra);
+            }
+            return items;
+        }
 
-            // Cada ItemMenu calcula su propio monto (cantidad x costo del menú):
-            // Presupuesto solo suma los resultados.
-            foreach (ItemMenu item in _menus)
+        // Monto = suma del monto de cada ítem (lugar, servicios adicionales, menús y extras).
+        // Según la consigna, la cantidad de horas NO entra en el cálculo.
+        // Presupuesto no sabe cómo calcula cada ítem su monto: se lo pide a cada uno (polimorfismo).
+        // Por eso un tipo de ítem nuevo se suma sin cambiar este método.
+        public decimal CalcularMonto()
+        {
+            decimal total = 0;
+            foreach (IItemPresupuesto item in ObtenerItems())
             {
                 total += item.CalcularMonto();
             }
@@ -157,6 +184,12 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             foreach (ItemMenu item in _menus)
             {
                 copia.Menus.Add(new ItemMenu(item.Cantidad, item.Item.Copiar(), item.ParaAdulto));
+            }
+
+            // Los ítems extra se copian a través de la interfaz, sin conocer su clase concreta.
+            foreach (IItemPresupuesto extra in _itemsExtra)
+            {
+                copia.ItemsExtra.Add(extra.CopiarItem());
             }
 
             copia.CalcularMonto();

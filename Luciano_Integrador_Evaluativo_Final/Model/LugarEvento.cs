@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Luciano_Integrador_Evaluativo_Final.Model
 {
     // Salón o lugar donde se hace el evento. Su precio es el costo base del lugar.
-    internal class LugarEvento
+    internal class LugarEvento : IItemPresupuesto
     {
         private int _id;
         private string _nombre;
@@ -51,6 +51,26 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         public override string ToString()
         {
             return Nombre;
+        }
+
+        // --- Implementación de IItemPresupuesto: el lugar es un ítem más del presupuesto ---
+
+        // Cómo se detalla el lugar en el presupuesto.
+        public string Descripcion
+        {
+            get { return "Lugar: " + Nombre; }
+        }
+
+        // El lugar suma su costo base.
+        public decimal CalcularMonto()
+        {
+            return Precio;
+        }
+
+        // Copia del lugar, como ítem del presupuesto.
+        public IItemPresupuesto CopiarItem()
+        {
+            return Copiar();
         }
     }
 }
