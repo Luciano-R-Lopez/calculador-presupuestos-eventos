@@ -1,0 +1,104 @@
+<diagram program="umletino" version="15.1"><zoom_level>7</zoom_level><element><id>UMLClass</id><coordinates><x>294</x><y>14</y><w>224</w><h>201</h></coordinates><panel_attributes>Presupuesto
+-
+- _id: int
+- _fechaCreacion: DateTime
+- _fechaEvento: DateTime
+- _estado: EstadoPresupuesto
+- _cantidadHoras: int
+- _serviciosAdicionales: List &lt;ServicioAdicional&gt;
+- _cliente: Cliente
+- _lugar: LugarEvento
+- _menus: List&lt;ItemMenu&gt;
+- _montoTotal: decimal
+
+-
++ Presupuesto(): Presupuesto
++ CalcularMonto(): decimal
++ CambiarEstado(estado): void
++ ClonarPresupuesto(): Presupuesto
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>14</y><w>105</w><h>60</h></coordinates><panel_attributes>&lt;&lt;EstadoPresupuesto&gt;&gt;
+-
+- Nuevo
+- Enviado
+- Pagado
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>91</y><w>217</w><h>114</h></coordinates><panel_attributes>LugarEvento
+-
+- _id: int
+- _nombre: string
+- _precio: decimal
+-
++ LugarEvento(id, nom, precio): LugarEvento
++ LugarEvento(nom, precio): LugarEvento
++ Copiar(): LugarEvento
++ ToString(): string
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>224</y><w>203</w><h>125</h></coordinates><panel_attributes>Cliente
+-
+- _id: int
+- _nombre: string
+- _telefono: string
+- _email: string
+-
++ Cliente(id, nom, tel, email): Cliente
++ Cliente(nom, tel, email): Cliente
++ Copiar(): Cliente
++ ToString(): string
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>364</y><w>259</w><h>114</h></coordinates><panel_attributes>ServicioAdicional
+-
+- _id: int
+- _nombre: string
+- _precio: decimal
+-
++ ServicioAdicional(id, nom, precio): ServicioAdicional
++ ServicioAdicional(nom, precio): ServicioAdicional
++ Copiar(): ServicioAdicional
++ ToString(): string
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>266</x><y>280</y><w>252</w><h>125</h></coordinates><panel_attributes>ItemMenu
+-
+- _id: int
+- _cantidad: int
+- _item: Menu
+- _montoTotal: decimal
+- _paraAdulto: bool
+-
++ ItemMenu(cantidad, menu, paraAdulto): ItemMenu
++ ItemMenu(id, cantidad, menu, paraAdulto): ItemMenu
++ CalcularMonto(): decimal
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>280</x><y>434</y><w>175</w><h>190</h></coordinates><panel_attributes>Menu
+-
+- _id: int
+- _nombre: string
+- _montoTotal: decimal
+- _platillos: List&lt;Platillo&gt;
+- _aptitud: List&lt;Aptitud&gt;
+-
++ Menu(nombre): Menu
++ Menu(id, nombre): Menu
++ AgregarPlatillo(platillo): void
++ EliminarPlatillo(platillo): void
++ AgregarAptitud(aptitud): void
++ EliminarAptitud(aptitud): void
++ CalcularMonto(): decimal
++ Copiar(): Menu
++ ToString(): string
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>532</x><y>490</y><w>220</w><h>125</h></coordinates><panel_attributes>Platillo
+-
+- _id: int
+- _nombre: string
+- _precio: decimal
+- _tipo: TipoPlatillo
+-
++ Platillo(nombre, precio, tipo): Platillo
++ Platillo(id, nombre, precio, tipo): Platillo
++ Copiar(): Platillo
++ ToString(): string
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>791</x><y>490</y><w>105</w><h>60</h></coordinates><panel_attributes>&lt;&lt;TipoPlatillo&gt;&gt;
+-
+- Entrada
+- Principal
+- Postre
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>280</x><y>651</y><w>105</w><h>60</h></coordinates><panel_attributes>&lt;&lt;Aptitud&gt;&gt;
+-
+- Veganos
+- Vegetarianos
+- Celiacos
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>511</x><y>35</y><w>126</w><h>14</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>170;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>511</x><y>98</y><w>126</w><h>14</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>170;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>511</x><y>154</y><w>126</w><h>133</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>170;180;90;180;90;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>511</x><y>189</y><w>126</w><h>238</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;50;10;50;330;170;330</additional_attributes></element><element><id>Relation</id><coordinates><x>245</x><y>98</y><w>56</w><h>245</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>70;10;10;10;10;340;30;340</additional_attributes></element><element><id>Relation</id><coordinates><x>224</x><y>357</y><w>63</w><h>126</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>80;170;10;170;10;10;60;10</additional_attributes></element><element><id>Relation</id><coordinates><x>448</x><y>511</y><w>91</w><h>14</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;120;10</additional_attributes></element><element><id>Relation</id><coordinates><x>746</x><y>511</y><w>52</w><h>14</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>64;10;9;10</additional_attributes></element><element><id>Relation</id><coordinates><x>326</x><y>617</y><w>14</w><h>41</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>9;49;9;11</additional_attributes></element></diagram>

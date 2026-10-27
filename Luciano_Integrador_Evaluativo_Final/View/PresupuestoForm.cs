@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 namespace Luciano_Integrador_Evaluativo_Final.View
 {
+    // Pantalla principal de presupuestos: se arma un presupuesto (fecha, horas, cliente, lugar, servicios y menús),
+    // con el monto calculándose al instante, y debajo la grilla para cambiar el estado, clonar, editar, eliminar
+    // y generar el PDF. No calcula nada: arma un DTO y le pide los resultados al Controller.
     public partial class PresupuestoForm : Form
     {
         private PresupuestoController _controller;
@@ -40,6 +43,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Id del presupuesto que se está editando. En 0 el formulario está en modo "registrar".
         private int _idEditando;
 
+        // Arma la pantalla: aplica el estilo, crea los Controllers, carga los combos, la lista de servicios, la grilla y el monto.
         public PresupuestoForm()
         {
             InitializeComponent();
@@ -94,6 +98,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _cargando = false;
         }
 
+        // Igual que CargarClientes, para el combo de lugares.
         private void CargarLugares(int indice)
         {
             _cargando = true;
@@ -119,6 +124,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _cargando = false;
         }
 
+        // Igual que CargarClientes, para el combo de menús.
         private void CargarMenus(int indice)
         {
             _cargando = true;
@@ -144,6 +150,8 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _cargando = false;
         }
 
+        // Al elegir un cliente recuerda la posición y recalcula el monto. Si se elige la opción "+ Agregar nuevo...",
+        // abre la pantalla de clientes y, al volver, recarga el combo y deja elegido el cliente recién agregado.
         private void comboBoxCliente_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_cargando)
@@ -175,6 +183,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
+        // Igual que el combo de clientes, pero con la pantalla de lugares.
         private void comboBoxLugar_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_cargando)
@@ -204,6 +213,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
+        // Igual que el combo de clientes, pero con la pantalla de menús.
         private void comboBoxMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_cargando)
@@ -262,6 +272,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             dataGridViewPresupuestos.Columns["colMontoTotal"].FillWeight = 122;
         }
 
+        // Agrega una columna a la grilla, enlazada a una propiedad del presupuesto y con su título.
         private void AgregarColumna(string propiedad, string titulo)
         {
             DataGridViewTextBoxColumn columna = new DataGridViewTextBoxColumn();
@@ -326,6 +337,8 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             dataGridViewPresupuestos.DataSource = new BindingList<Presupuesto>(_controller.GetPresupuestos());
         }
 
+        // Botón Agregar ítem: agrega a la lista el menú elegido con su cantidad de invitados (adultos o niños)
+        // y recalcula el monto.
         private void btnAgregarItem_Click(object sender, EventArgs e)
         {
             Menu? menu = comboBoxMenu.SelectedItem as Menu;
@@ -352,6 +365,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             return nombreMenu + " x" + cantidad + " (" + destino + ")";
         }
 
+        // Botón Quitar ítem: saca de la lista el ítem seleccionado y recalcula el monto.
         private void btnQuitarItem_Click(object sender, EventArgs e)
         {
             int indice = listBoxItems.SelectedIndex;
@@ -363,6 +377,8 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
+        // Botón Registrar/Guardar cambios: envía el DTO al Controller. En modo edición actualiza el presupuesto;
+        // si no, registra uno nuevo. Luego refresca la grilla y limpia el formulario.
         private void btnRegistrar_Click(object sender, EventArgs e)
         {
             try
@@ -491,12 +507,14 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
+        // Botón Cancelar edición: descarta lo cargado y vuelve al modo registrar.
         private void btnCancelarEdicion_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
             SalirDeEdicion();
         }
 
+        // Vuelve al modo registrar: sin presupuesto en edición, botón con su texto original y sin botón Cancelar.
         private void SalirDeEdicion()
         {
             _idEditando = 0;
@@ -514,6 +532,8 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             return dataGridViewPresupuestos.CurrentRow.DataBoundItem as Presupuesto;
         }
 
+        // Botón Cambiar estado: pasa el presupuesto seleccionado al estado elegido en el combo.
+        // Si el cambio no está permitido, el Controller lanza un error que se muestra en un cuadro.
         private void btnCambiarEstado_Click(object sender, EventArgs e)
         {
             Presupuesto? seleccionado = ObtenerSeleccionado();
@@ -536,6 +556,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
+        // Botón Clonar: crea un presupuesto nuevo igual al seleccionado.
         private void btnClonar_Click(object sender, EventArgs e)
         {
             Presupuesto? seleccionado = ObtenerSeleccionado();
@@ -557,6 +578,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
+        // Botón Generar PDF: pide dónde guardar el archivo y le pide al Controller generar el PDF del presupuesto seleccionado.
         private void btnGenerarPdf_Click(object sender, EventArgs e)
         {
             Presupuesto? seleccionado = ObtenerSeleccionado();
@@ -605,11 +627,13 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _filtrando = false;
         }
 
+        // Se ejecuta cada vez que se escribe en el buscador: vuelve a filtrar la lista de servicios.
         private void textBoxBuscarServicio_TextChanged(object sender, EventArgs e)
         {
             FiltrarServicios();
         }
 
+        // Se ejecuta al tildar o destildar un servicio: actualiza la lista de ids tildados y recalcula el monto.
         private void checkedListBoxServicios_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (_filtrando)
@@ -635,6 +659,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             BeginInvoke(new Action(RecalcularMonto));
         }
 
+        // Vacía el formulario: ítems, horas, cantidad, buscador y servicios tildados, y recalcula el monto.
         private void LimpiarCampos()
         {
             _items.Clear();

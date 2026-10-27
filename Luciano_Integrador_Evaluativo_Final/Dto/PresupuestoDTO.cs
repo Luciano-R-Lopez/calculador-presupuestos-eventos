@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace Luciano_Integrador_Evaluativo_Final.Dto
 {
+    // DTO (objeto de transferencia de datos): lleva solo los datos que carga el usuario, sin id ni lógica.
+    // Cliente, lugar y servicios viajan como ids; los menús, como una lista de ItemMenuDTO.
     internal class PresupuestoDTO
     {
         private DateTime _fechaEvento;
@@ -12,6 +14,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Dto
         private List<int> _idsServiciosAdicionales;
         private List<ItemMenuDTO> _menus;
 
+        // Arma el DTO con todo lo que se carga en el formulario de presupuestos.
         public PresupuestoDTO(DateTime fechaEvento, int cantidadHoras, int idCliente, int idLugar,
             List<int> idsServiciosAdicionales, List<ItemMenuDTO> menus)
         {
@@ -23,6 +26,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Dto
             Menus = menus;
         }
 
+        // Propiedades: dan acceso a los campos privados.
         public DateTime FechaEvento
         {
             get { return _fechaEvento; }

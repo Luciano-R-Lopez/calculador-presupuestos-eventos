@@ -237,6 +237,8 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
+        // Da el aspecto corporativo a una grilla: encabezado oscuro, filas alternadas, selección suave,
+        // sin columna lateral y con las columnas repartidas a lo ancho.
         private static void EstiloGrilla(DataGridView grilla)
         {
             grilla.BackgroundColor = Color.White;

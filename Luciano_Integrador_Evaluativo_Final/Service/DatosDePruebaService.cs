@@ -16,6 +16,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
         private PlatilloService _platilloService;
         private MenuService _menuService;
 
+        // Crea los Services que se usan para cargar los datos.
         public DatosDePruebaService()
         {
             _clienteService = new ClienteService();
@@ -25,6 +26,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _menuService = new MenuService();
         }
 
+        // Carga todos los datos de ejemplo, en orden (los menús necesitan que ya existan los platillos).
         public void Cargar()
         {
             // Si ya hay datos cargados no se vuelve a cargar.
@@ -38,24 +40,28 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             CargarMenus();
         }
 
+        // Carga 2 clientes de ejemplo.
         private void CargarClientes()
         {
             _clienteService.RegistrarCliente(new ClienteDTO("María González", "351-4567890", "maria.gonzalez@mail.com"));
             _clienteService.RegistrarCliente(new ClienteDTO("Empresa Altos del Sur S.A.", "351-4123456", "eventos@altosdelsur.com"));
         }
 
+        // Carga 2 lugares de ejemplo.
         private void CargarLugares()
         {
             _lugarService.RegistrarLugarEvento(new LugarEventoDTO("Salón Los Álamos", 450000));
             _lugarService.RegistrarLugarEvento(new LugarEventoDTO("Quinta La Estancia", 780000));
         }
 
+        // Carga 2 servicios adicionales de ejemplo.
         private void CargarServicios()
         {
             _servicioService.RegistrarServicioAdicional(new ServicioAdicionalDTO("DJ y sonido", 120000));
             _servicioService.RegistrarServicioAdicional(new ServicioAdicionalDTO("Decoración temática", 95000));
         }
 
+        // Carga 2 platillos de ejemplo.
         private void CargarPlatillos()
         {
             // Los ids se asignan en orden: 1 = Ensalada Caprese, 2 = Milanesa con papas.
@@ -63,6 +69,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _platilloService.RegistrarPlatillo(new PlatilloDTO("Milanesa con papas", 7500, TipoPlatillo.Principal));
         }
 
+        // Carga 2 menús de ejemplo que usan los platillos anteriores (por id).
         private void CargarMenus()
         {
             List<int> platillosClasico = new List<int>();

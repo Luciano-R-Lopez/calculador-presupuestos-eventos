@@ -6,17 +6,21 @@ using System;
 
 namespace Luciano_Integrador_Evaluativo_Final.Service
 {
+    // Service: contiene la lógica de negocio (validaciones y reglas). Usa el Repository para guardar y buscar.
+    // Maneja los ítems de menú (un menú con su cantidad de invitados) que forman parte de un presupuesto.
     internal class ItemMenuService
     {
         private ItemMenuListRepository _repository;
         private MenuListRepository _menuRepository;
 
+        // Obtiene los repositorios (Singleton) de ítems y de menús.
         public ItemMenuService()
         {
             _repository = ItemMenuListRepository.GetInstance();
             _menuRepository = MenuListRepository.GetInstance();
         }
 
+        // Comprueba que la cantidad de invitados sea mayor a cero; si no, lanza ArgumentException.
         public void ValidarRegistro(ItemMenuDTO dto)
         {
             if (dto.Cantidad <= 0)
@@ -37,16 +41,19 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             return new ItemMenu(dto.Cantidad, menu.Copiar(), dto.ParaAdulto);
         }
 
+        // Guarda el ítem en el Repository (que le asigna el id).
         public void GuardarItemMenu(ItemMenu item)
         {
             _repository.Agregar(item);
         }
 
+        // Elimina el ítem del Repository por su id.
         public void EliminarItemMenu(ItemMenu item)
         {
             _repository.Delete(item.Id);
         }
 
+        // Crea el ítem (CrearItemMenu), lo guarda y lo devuelve.
         public ItemMenu RegistrarItemMenu(ItemMenuDTO dto)
         {
             ItemMenu item = CrearItemMenu(dto);
@@ -55,6 +62,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             return item;
         }
 
+        // Devuelve la lista de ítems de menú que tiene guardada el Repository.
         public List<ItemMenu> GetItemsMenu()
         {
             return _repository.GetTodos();

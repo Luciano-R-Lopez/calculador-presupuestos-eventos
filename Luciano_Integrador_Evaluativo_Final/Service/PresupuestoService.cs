@@ -5,6 +5,9 @@ using System;
 
 namespace Luciano_Integrador_Evaluativo_Final.Service
 {
+    // Service: contiene la lógica de negocio (validaciones y reglas). Usa el Repository para guardar y buscar.
+    // Es el Service principal: arma presupuestos a partir de un DTO, controla su edición y cambios de
+    // estado, y genera el PDF. Trabaja con los repositorios de cliente, lugar y servicios, y con ItemMenuService.
     internal class PresupuestoService
     {
         private PresupuestoListRepository _repository;
@@ -13,6 +16,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
         private ServicioAdicionalListRepository _servicioRepository;
         private ItemMenuService _itemMenuService;
 
+        // Obtiene los repositorios (Singleton) que necesita y crea el ItemMenuService.
         public PresupuestoService()
         {
             _repository = PresupuestoListRepository.GetInstance();
@@ -22,6 +26,8 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _itemMenuService = new ItemMenuService();
         }
 
+        // Reglas para registrar o editar: la fecha del evento no puede ser anterior a hoy, las horas deben
+        // ser mayores a cero y debe haber al menos un menú. Si falla alguna, lanza ArgumentException.
         public void ValidarRegistro(PresupuestoDTO dto)
         {
             if (dto.FechaEvento.Date < DateTime.Today)
@@ -35,6 +41,8 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
         }
 
         // Arma el presupuesto a partir del DTO sin guardarlo. Cliente y lugar pueden quedar sin asignar.
+        // Cómo: busca cada dato por id en su repositorio, guarda una copia (Copiar) de cada uno, crea los
+        // ítems de menú y calcula el monto.
         private Presupuesto Construir(PresupuestoDTO dto)
         {
             Presupuesto presupuesto = new Presupuesto();
@@ -78,11 +86,15 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             return presupuesto;
         }
 
+        // Devuelve el monto de lo cargado hasta el momento, sin guardar nada: arma el presupuesto y toma su total.
+        // Lo usa la View para mostrar el monto al instante.
         public decimal CalcularMonto(PresupuestoDTO dto)
         {
             return Construir(dto).MontoTotal;
         }
 
+        // Valida el DTO, arma el presupuesto y comprueba que existan el cliente y el lugar. Guarda sus ítems
+        // de menú y el presupuesto en los repositorios.
         public void RegistrarPresupuesto(PresupuestoDTO dto)
         {
             ValidarRegistro(dto);
@@ -103,6 +115,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
 
         // Comprueba que el presupuesto se pueda editar y lo devuelve. No se puede editar si ya está
         // pagado ni si la fecha del evento ya pasó: en ambos casos queda como registro cerrado.
+        // Cómo: busca el presupuesto (error si no existe), y lanza un error si está pagado o si su evento ya pasó.
         public Presupuesto ValidarEdicion(int id)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
@@ -121,6 +134,8 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
         // Modifica el presupuesto existente. Se conservan su id, su fecha de creación y su estado.
         // Al editarlo se vuelve a presupuestar: los datos y precios se toman nuevamente de los valores
         // actuales. Primero se arma un presupuesto temporal para validar todo antes de tocar el original.
+        // Cómo: valida que se pueda editar, arma un presupuesto temporal con los datos nuevos y, si todo es
+        // válido, se los copia al original (listas incluidas) y recalcula el monto.
         public void ActualizarPresupuesto(int id, PresupuestoDTO dto)
         {
             Presupuesto presupuesto = ValidarEdicion(id);
@@ -161,6 +176,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
 
         // Un presupuesto pagado no se puede eliminar. Al eliminarlo se borran también sus ítems de menú,
         // porque forman parte del presupuesto.
+        // Cómo: busca el presupuesto, rechaza si está pagado, elimina sus ítems de menú y lo elimina.
         public void EliminarPresupuesto(int id)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
@@ -176,6 +192,8 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _repository.Delete(id);
         }
 
+        // Busca el presupuesto (error si no existe) y le pide cambiar de estado; el flujo permitido lo controla
+        // el propio Presupuesto (Nuevo -> Enviado -> Pagado).
         public void CambiarEstado(int id, EstadoPresupuesto estado)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
@@ -185,6 +203,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             presupuesto.CambiarEstado(estado);
         }
 
+        // Busca el presupuesto, le pide una copia (ClonarPresupuesto) y la guarda como un presupuesto nuevo.
         public void ClonarPresupuesto(int id)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
@@ -194,6 +213,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _repository.Agregar(presupuesto.ClonarPresupuesto());
         }
 
+        // Busca el presupuesto, comprueba la ruta y le pide a PresupuestoPdfService que genere el archivo PDF.
         public void GenerarPdf(int id, string ruta)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
@@ -207,6 +227,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             pdfService.Generar(presupuesto, ruta);
         }
 
+        // Devuelve la lista de presupuestos que tiene guardada el Repository.
         public List<Presupuesto> GetPresupuestos()
         {
             return _repository.GetTodos();

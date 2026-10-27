@@ -6,6 +6,7 @@ using System;
 
 namespace Luciano_Integrador_Evaluativo_Final.Service
 {
+    // Service que genera el PDF con el detalle de un presupuesto, para entregarlo al cliente.
     internal class PresupuestoPdfService
     {
         private const double Margen = 50;

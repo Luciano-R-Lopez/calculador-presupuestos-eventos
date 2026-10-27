@@ -6,17 +6,21 @@ using System;
 
 namespace Luciano_Integrador_Evaluativo_Final.Service
 {
+    // Service: contiene la lógica de negocio (validaciones y reglas). Usa el Repository para guardar y buscar.
     internal class MenuService
     {
         private MenuListRepository _repository;
         private PlatilloListRepository _platilloRepository;
 
+        // Obtiene la única instancia (Singleton) del repositorio con el que trabaja.
         public MenuService()
         {
             _repository = MenuListRepository.GetInstance();
             _platilloRepository = PlatilloListRepository.GetInstance();
         }
 
+        // Comprueba las reglas del menú: el nombre es obligatorio y debe tener al menos un platillo.
+        // Si alguna falla, lanza ArgumentException con el motivo, que la View muestra al usuario.
         public void ValidarRegistro(MenuDTO dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Nombre))
@@ -27,6 +31,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
         }
 
         // Arma el menú a partir del DTO sin guardarlo. Valida que los platillos existan.
+        // Cómo: busca cada platillo por id (error si no existe) y lo agrega al menú, y luego agrega las aptitudes.
         private Menu ArmarMenu(MenuDTO dto)
         {
             Menu menu = new Menu(dto.Nombre);
@@ -49,6 +54,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             return menu;
         }
 
+        // Valida el DTO, arma el menú (ArmarMenu) y lo guarda en el Repository, que le asigna el id.
         public void RegistrarMenu(MenuDTO dto)
         {
             ValidarRegistro(dto);
@@ -58,6 +64,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
 
         // Modifica el menú existente. Los presupuestos ya generados no se ven afectados porque guardan
         // una copia del menú. Primero se arma un menú temporal para validar todo antes de tocar el original.
+        // Valida el DTO, busca el menú por su id (error si no existe), le copia los datos nuevos y avisa al Repository.
         public void ActualizarMenu(int id, MenuDTO dto)
         {
             ValidarRegistro(dto);
@@ -86,6 +93,8 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
         }
 
         // No se puede eliminar un menú que está en algún presupuesto.
+        // Recorre los presupuestos y sus ítems y cuenta cuántos usan el menú; si hay alguno lanza un error,
+        // y si no, lo elimina del Repository.
         public void EliminarMenu(int id)
         {
             int enUso = 0;
@@ -106,6 +115,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _repository.Delete(id);
         }
 
+        // Devuelve la lista de menús que tiene guardada el Repository.
         public List<Menu> GetMenus()
         {
             return _repository.GetTodos();

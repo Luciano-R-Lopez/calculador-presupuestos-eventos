@@ -5,6 +5,7 @@ namespace Luciano_Integrador_Evaluativo_Final
 {
     internal static class Program
     {
+        // Punto de entrada de la aplicación: carga los datos de ejemplo y abre el menú principal.
         [STAThread]
         static void Main()
         {

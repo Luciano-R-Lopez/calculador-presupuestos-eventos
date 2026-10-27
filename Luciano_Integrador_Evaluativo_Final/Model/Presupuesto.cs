@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace Luciano_Integrador_Evaluativo_Final.Model
 {
+    // Presupuesto de un evento. Reúne el cliente, el lugar, los servicios adicionales y los menús,
+    // y calcula el monto total. Es un registro: guarda COPIAS de esos datos tal como estaban al generarlo.
     internal class Presupuesto
     {
         private int _id;
@@ -20,6 +22,8 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         private List<ItemMenu> _menus;
         private decimal _montoTotal;
 
+        // Crea un presupuesto vacío: estado Nuevo, fecha de creación de ahora y listas sin elementos.
+        // Los demás datos se completan desde el Service.
         public Presupuesto()
         {
             FechaCreacion = DateTime.Now;
@@ -28,6 +32,8 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             _menus = new List<ItemMenu>();
         }
 
+        // Propiedades: dan acceso a los campos privados. Las listas (servicios y menús) solo tienen get:
+        // se modifican agregando o quitando elementos de la lista, no reemplazándola.
         public int Id
         {
             get { return _id; }

@@ -8,6 +8,8 @@ using System.Windows.Forms;
 
 namespace Luciano_Integrador_Evaluativo_Final.View
 {
+    // Pantalla de menús: formulario para armar un menú (nombre, platillos y aptitudes), editarlo o eliminarlo.
+    // Solo captura datos y muestra resultados; las reglas están en el Service.
     public partial class MenuForm : Form
     {
         private MenuController _controller;
@@ -23,6 +25,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Id del menú que se está editando. En 0 el formulario está en modo "agregar".
         private int _idEditando;
 
+        // Arma la pantalla: aplica el estilo, crea los Controllers, carga la lista de platillos, las aptitudes y la grilla.
         public MenuForm()
         {
             InitializeComponent();
@@ -37,6 +40,8 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             SalirDeEdicion();
         }
 
+        // Botón Agregar/Guardar: arma el MenuDTO con el nombre, los platillos tildados y las aptitudes marcadas,
+        // lo envía al Controller y refresca la grilla. En modo edición guarda los cambios; si no, agrega un menú nuevo.
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             try
@@ -148,12 +153,14 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
+        // Botón Cancelar: descarta lo escrito y vuelve al modo agregar.
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
             SalirDeEdicion();
         }
 
+        // Vuelve al modo agregar: sin menú en edición, botón con el texto Agregar y sin botón Cancelar.
         private void SalirDeEdicion()
         {
             _idEditando = 0;
@@ -181,6 +188,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _filtrando = false;
         }
 
+        // Se ejecuta cada vez que se escribe en el buscador: vuelve a filtrar la lista de platillos.
         private void textBoxBuscarPlatillo_TextChanged(object sender, EventArgs e)
         {
             FiltrarPlatillos();
@@ -223,11 +231,13 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             FiltrarPlatillos();
         }
 
+        // Vuelve a cargar la grilla con la lista actual de menús.
         private void RefrescarGrilla()
         {
             dataGridViewMenus.DataSource = new BindingList<Menu>(_controller.GetMenus());
         }
 
+        // Vacía el nombre, el buscador, los platillos tildados y las aptitudes marcadas.
         private void LimpiarCampos()
         {
             textBoxNombreMenu.Clear();

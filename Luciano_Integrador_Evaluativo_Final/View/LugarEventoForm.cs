@@ -7,6 +7,8 @@ using System.Windows.Forms;
 
 namespace Luciano_Integrador_Evaluativo_Final.View
 {
+    // Pantalla de lugares de evento: formulario para cargar, editar y eliminar, con la grilla de los ya cargados.
+    // Solo captura datos y muestra resultados; las reglas están en el Service.
     public partial class LugarEventoForm : Form
     {
         private LugarEventoController _controller;
@@ -14,6 +16,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Id del lugar que se está editando. En 0 el formulario está en modo "agregar".
         private int _idEditando;
 
+        // Arma la pantalla: aplica el estilo, crea el Controller, carga la grilla y deja el formulario en modo agregar.
         public LugarEventoForm()
         {
             InitializeComponent();
@@ -23,6 +26,8 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             SalirDeEdicion();
         }
 
+        // Botón Agregar/Guardar: arma el DTO con lo escrito y lo envía al Controller, y refresca la grilla.
+        // En modo edición guarda los cambios del elemento; si no, agrega uno nuevo. Los errores se muestran en un cuadro.
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             try
@@ -126,12 +131,14 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
+        // Botón Cancelar: descarta lo escrito y vuelve al modo agregar.
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
             SalirDeEdicion();
         }
 
+        // Vuelve al modo agregar: sin elemento en edición, botón con el texto Agregar y sin botón Cancelar.
         private void SalirDeEdicion()
         {
             _idEditando = 0;
@@ -139,12 +146,14 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             btnCancelar.Visible = false;
         }
 
+        // Vuelve a cargar la grilla con la lista actual que devuelve el Controller.
         private void RefrescarGrilla()
         {
             dataGridViewLugares.DataSource =
                 new BindingList<LugarEvento>(_controller.GetLugaresEvento());
         }
 
+        // Vacía los campos del formulario.
         private void LimpiarCampos()
         {
             textBoxNombreLugar.Clear();
