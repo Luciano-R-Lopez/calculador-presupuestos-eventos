@@ -28,145 +28,132 @@
         /// </summary>
         private void InitializeComponent()
         {
-            panelEncabezado = new Panel();
-            labelTitulo = new Label();
-            labelSubtitulo = new Label();
+            pnlBarra = new Panel();
+            lblTitulo = new Label();
+            btnPresupuestos = new Button();
             btnClientes = new Button();
-            btnServiciosAdicionales = new Button();
             btnLugares = new Button();
+            btnServiciosAdicionales = new Button();
             btnPlatillos = new Button();
             btnMenus = new Button();
-            btnPresupuestos = new Button();
-            panelEncabezado.SuspendLayout();
+            pnlContenido = new Panel();
+            pnlBarra.SuspendLayout();
             SuspendLayout();
             //
-            // panelEncabezado
+            // pnlBarra
             //
-            panelEncabezado.BackColor = Color.FromArgb(31, 58, 95);
-            panelEncabezado.Controls.Add(labelSubtitulo);
-            panelEncabezado.Controls.Add(labelTitulo);
-            panelEncabezado.Dock = DockStyle.Top;
-            panelEncabezado.Location = new Point(0, 0);
-            panelEncabezado.Name = "panelEncabezado";
-            panelEncabezado.Size = new Size(620, 100);
-            panelEncabezado.TabIndex = 0;
+            pnlBarra.Controls.Add(btnMenus);
+            pnlBarra.Controls.Add(btnPlatillos);
+            pnlBarra.Controls.Add(btnServiciosAdicionales);
+            pnlBarra.Controls.Add(btnLugares);
+            pnlBarra.Controls.Add(btnClientes);
+            pnlBarra.Controls.Add(btnPresupuestos);
+            pnlBarra.Controls.Add(lblTitulo);
+            pnlBarra.Dock = DockStyle.Top;
+            pnlBarra.Location = new Point(0, 0);
+            pnlBarra.Name = "pnlBarra";
+            pnlBarra.Size = new Size(1280, 60);
+            pnlBarra.TabIndex = 0;
             //
-            // labelTitulo
+            // lblTitulo
             //
-            labelTitulo.AutoSize = true;
-            labelTitulo.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            labelTitulo.ForeColor = Color.White;
-            labelTitulo.Location = new Point(24, 16);
-            labelTitulo.Name = "labelTitulo";
-            labelTitulo.Size = new Size(380, 41);
-            labelTitulo.TabIndex = 0;
-            labelTitulo.Text = "Calculador de Presupuestos";
-            //
-            // labelSubtitulo
-            //
-            labelSubtitulo.AutoSize = true;
-            labelSubtitulo.ForeColor = Color.FromArgb(200, 212, 230);
-            labelSubtitulo.Location = new Point(27, 62);
-            labelSubtitulo.Name = "labelSubtitulo";
-            labelSubtitulo.Size = new Size(213, 20);
-            labelSubtitulo.TabIndex = 1;
-            labelSubtitulo.Text = "Gestión de eventos y presupuestos";
+            lblTitulo.AutoSize = true;
+            lblTitulo.Location = new Point(20, 17);
+            lblTitulo.Name = "lblTitulo";
+            lblTitulo.Size = new Size(280, 30);
+            lblTitulo.TabIndex = 0;
+            lblTitulo.Text = "Calculador de Presupuestos";
             //
             // btnPresupuestos
             //
-            btnPresupuestos.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            btnPresupuestos.Location = new Point(30, 125);
+            btnPresupuestos.Location = new Point(340, 0);
             btnPresupuestos.Name = "btnPresupuestos";
-            btnPresupuestos.Size = new Size(560, 60);
+            btnPresupuestos.Size = new Size(130, 60);
             btnPresupuestos.TabIndex = 1;
             btnPresupuestos.Text = "Presupuestos";
-            btnPresupuestos.UseVisualStyleBackColor = true;
             btnPresupuestos.Click += btnPresupuestos_Click;
             //
             // btnClientes
             //
-            btnClientes.Location = new Point(30, 210);
+            btnClientes.Location = new Point(470, 0);
             btnClientes.Name = "btnClientes";
-            btnClientes.Tag = "secundario";
-            btnClientes.Size = new Size(270, 50);
+            btnClientes.Size = new Size(100, 60);
             btnClientes.TabIndex = 2;
             btnClientes.Text = "Clientes";
-            btnClientes.UseVisualStyleBackColor = true;
             btnClientes.Click += btnClientes_Click;
             //
             // btnLugares
             //
-            btnLugares.Location = new Point(320, 210);
+            btnLugares.Location = new Point(570, 0);
             btnLugares.Name = "btnLugares";
-            btnLugares.Tag = "secundario";
-            btnLugares.Size = new Size(270, 50);
+            btnLugares.Size = new Size(100, 60);
             btnLugares.TabIndex = 3;
             btnLugares.Text = "Lugares";
-            btnLugares.UseVisualStyleBackColor = true;
             btnLugares.Click += btnLugares_Click;
-            //
-            // btnMenus
-            //
-            btnMenus.Location = new Point(30, 275);
-            btnMenus.Name = "btnMenus";
-            btnMenus.Tag = "secundario";
-            btnMenus.Size = new Size(270, 50);
-            btnMenus.TabIndex = 4;
-            btnMenus.Text = "Menús";
-            btnMenus.UseVisualStyleBackColor = true;
-            btnMenus.Click += btnMenus_Click;
-            //
-            // btnPlatillos
-            //
-            btnPlatillos.Location = new Point(320, 275);
-            btnPlatillos.Name = "btnPlatillos";
-            btnPlatillos.Tag = "secundario";
-            btnPlatillos.Size = new Size(270, 50);
-            btnPlatillos.TabIndex = 5;
-            btnPlatillos.Text = "Platillos";
-            btnPlatillos.UseVisualStyleBackColor = true;
-            btnPlatillos.Click += btnPlatillos_Click;
             //
             // btnServiciosAdicionales
             //
-            btnServiciosAdicionales.Location = new Point(30, 340);
+            btnServiciosAdicionales.Location = new Point(670, 0);
             btnServiciosAdicionales.Name = "btnServiciosAdicionales";
-            btnServiciosAdicionales.Tag = "secundario";
-            btnServiciosAdicionales.Size = new Size(560, 50);
-            btnServiciosAdicionales.TabIndex = 6;
-            btnServiciosAdicionales.Text = "Servicios Adicionales";
-            btnServiciosAdicionales.UseVisualStyleBackColor = true;
+            btnServiciosAdicionales.Size = new Size(215, 60);
+            btnServiciosAdicionales.TabIndex = 4;
+            btnServiciosAdicionales.Text = "Servicios adicionales";
             btnServiciosAdicionales.Click += btnServiciosAdicionales_Click;
+            //
+            // btnPlatillos
+            //
+            btnPlatillos.Location = new Point(885, 0);
+            btnPlatillos.Name = "btnPlatillos";
+            btnPlatillos.Size = new Size(100, 60);
+            btnPlatillos.TabIndex = 5;
+            btnPlatillos.Text = "Platillos";
+            btnPlatillos.Click += btnPlatillos_Click;
+            //
+            // btnMenus
+            //
+            btnMenus.Location = new Point(985, 0);
+            btnMenus.Name = "btnMenus";
+            btnMenus.Size = new Size(90, 60);
+            btnMenus.TabIndex = 6;
+            btnMenus.Text = "Menús";
+            btnMenus.Click += btnMenus_Click;
+            //
+            // pnlContenido
+            //
+            pnlContenido.Dock = DockStyle.Fill;
+            pnlContenido.Location = new Point(0, 60);
+            pnlContenido.Name = "pnlContenido";
+            pnlContenido.Size = new Size(1280, 700);
+            pnlContenido.TabIndex = 1;
             //
             // MenuPrincipalForm
             //
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(620, 420);
-            Controls.Add(panelEncabezado);
-            Controls.Add(btnPresupuestos);
-            Controls.Add(btnClientes);
-            Controls.Add(btnLugares);
-            Controls.Add(btnMenus);
-            Controls.Add(btnPlatillos);
-            Controls.Add(btnServiciosAdicionales);
+            ClientSize = new Size(1280, 760);
+            Controls.Add(pnlContenido);
+            Controls.Add(pnlBarra);
+            MinimumSize = new Size(1100, 700);
             Name = "MenuPrincipalForm";
-            Text = "Menú Principal";
-            panelEncabezado.ResumeLayout(false);
-            panelEncabezado.PerformLayout();
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Calculador de Presupuestos";
+            WindowState = FormWindowState.Maximized;
+            Load += MenuPrincipalForm_Load;
+            pnlBarra.ResumeLayout(false);
+            pnlBarra.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private Panel panelEncabezado;
-        private Label labelTitulo;
-        private Label labelSubtitulo;
+        private Panel pnlBarra;
+        private Label lblTitulo;
+        private Button btnPresupuestos;
         private Button btnClientes;
-        private Button btnServiciosAdicionales;
         private Button btnLugares;
+        private Button btnServiciosAdicionales;
         private Button btnPlatillos;
         private Button btnMenus;
-        private Button btnPresupuestos;
+        private Panel pnlContenido;
     }
 }

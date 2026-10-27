@@ -254,7 +254,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             //
             btnCambiarEstado.Location = new Point(520, 599);
             btnCambiarEstado.Name = "btnCambiarEstado";
-            btnCambiarEstado.Size = new Size(125, 30);
+            btnCambiarEstado.Size = new Size(145, 30);
             btnCambiarEstado.TabIndex = 21;
             btnCambiarEstado.Text = "Cambiar estado";
             btnCambiarEstado.UseVisualStyleBackColor = true;
@@ -262,7 +262,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             //
             // btnClonar
             //
-            btnClonar.Location = new Point(655, 599);
+            btnClonar.Location = new Point(675, 599);
             btnClonar.Name = "btnClonar";
             btnClonar.Tag = "secundario";
             btnClonar.Size = new Size(85, 30);
@@ -273,7 +273,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             // 
             // btnGenerarPdf
             // 
-            btnGenerarPdf.Location = new Point(845, 599);
+            btnGenerarPdf.Location = new Point(865, 599);
             btnGenerarPdf.Name = "btnGenerarPdf";
             btnGenerarPdf.Size = new Size(125, 30);
             btnGenerarPdf.TabIndex = 23;
@@ -292,7 +292,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             // 
             // btnEditar
             // 
-            btnEditar.Location = new Point(750, 599);
+            btnEditar.Location = new Point(770, 599);
             btnEditar.Name = "btnEditar";
             btnEditar.Tag = "secundario";
             btnEditar.Size = new Size(85, 30);
@@ -314,7 +314,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             // 
             // btnEliminar
             // 
-            btnEliminar.Location = new Point(980, 599);
+            btnEliminar.Location = new Point(1000, 599);
             btnEliminar.Name = "btnEliminar";
             btnEliminar.Tag = "peligro";
             btnEliminar.Size = new Size(90, 30);

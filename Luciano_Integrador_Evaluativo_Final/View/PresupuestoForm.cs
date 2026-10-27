@@ -44,10 +44,16 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private int _idEditando;
 
         // Arma la pantalla: aplica el estilo, crea los Controllers, carga los combos, la lista de servicios, la grilla y el monto.
-        public PresupuestoForm()
+        public PresupuestoForm() : this(false)
+        {
+        }
+
+        // Si embebido es true la pantalla se muestra dentro de la ventana principal (en una pestaña), sin encabezado
+        // propio. Si es false se muestra como ventana aparte (por ejemplo desde "+ Agregar nuevo...").
+        public PresupuestoForm(bool embebido)
         {
             InitializeComponent();
-            Estilo.Aplicar(this);
+            Estilo.Aplicar(this, !embebido);
             _controller = new PresupuestoController();
             _clienteController = new ClienteController();
             _lugarController = new LugarEventoController();

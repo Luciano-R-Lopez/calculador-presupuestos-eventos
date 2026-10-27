@@ -17,10 +17,16 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private int _idEditando;
 
         // Arma la pantalla: aplica el estilo, crea el Controller, carga la grilla y deja el formulario en modo agregar.
-        public ClienteForm()
+        public ClienteForm() : this(false)
+        {
+        }
+
+        // Si embebido es true la pantalla se muestra dentro de la ventana principal (en una pestaña), sin encabezado
+        // propio. Si es false se muestra como ventana aparte (por ejemplo desde "+ Agregar nuevo...").
+        public ClienteForm(bool embebido)
         {
             InitializeComponent();
-            Estilo.Aplicar(this);
+            Estilo.Aplicar(this, !embebido);
             _controller = new ClienteController();
             RefrescarGrilla();
             SalirDeEdicion();

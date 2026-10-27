@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Luciano_Integrador_Evaluativo_Final.View
@@ -19,8 +20,19 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         public static readonly Color ColorPeligro = Color.FromArgb(176, 42, 48);
         public static readonly Color ColorBorde = Color.FromArgb(203, 211, 222);
 
+        // Colores de la barra de pestañas de la ventana principal (oscura, a diferencia de las pantallas).
+        public static readonly Color ColorBarra = Color.FromArgb(21, 24, 29);
+        public static readonly Color ColorBarraHover = Color.FromArgb(35, 40, 49);
+        public static readonly Color ColorTextoBarra = Color.FromArgb(154, 163, 174);
+        public static readonly Color ColorTextoBarraActivo = Color.FromArgb(227, 230, 234);
+        public static readonly Color ColorAcentoClaro = Color.FromArgb(143, 179, 230);
+
         // Altura del encabezado que se agrega a cada pantalla.
         private const int AlturaEncabezado = 56;
+
+        // Alto aproximado que ocupan la barra de título de Windows y la barra de pestañas de la ventana
+        // principal. Se usa para que una pantalla incrustada en ella no quede más alta que el espacio libre.
+        private const int AlturaVentanaPrincipal = 120;
 
         // Cuánto se agranda cada pantalla (1.2 = 20% más grande).
         private const float EscalaDeseada = 1.2f;
@@ -35,7 +47,9 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             Aplicar(formulario, true);
         }
 
-        // Si conEncabezado es false no se agrega el encabezado (el menú principal ya tiene el suyo).
+        // Si conEncabezado es true la pantalla se muestra como ventana propia y lleva su encabezado con el
+        // título. Si es false está pensada para mostrarse dentro de la ventana principal (en una pestaña),
+        // que ya indica en qué pantalla se está, así que no lleva encabezado.
         public static void Aplicar(Form formulario, bool conEncabezado)
         {
             formulario.BackColor = ColorFondo;
@@ -60,7 +74,9 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
         // Estira cada grilla hasta el borde inferior de la ventana, dejando el mismo margen que arriba,
         // para aprovechar el espacio. Si hay controles debajo de la grilla (por ejemplo los botones de
-        // acciones de Presupuestos) no se toca.
+        // acciones de Presupuestos) la grilla no se estira ahora, pero esos controles quedan anclados
+        // abajo. En los dos casos la grilla queda anclada a los cuatro bordes: cuando la pantalla se
+        // muestra dentro de la ventana principal (y cambia de tamaño), la grilla crece con ella.
         private static void EstirarGrillas(Form formulario)
         {
             foreach (Control control in formulario.Controls)
@@ -76,6 +92,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
                         && otro.Right > grilla.Left && otro.Left < grilla.Right)
                     {
                         hayControlesDebajo = true;
+                        otro.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
                     }
                 }
 
@@ -83,6 +100,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
                 {
                     grilla.Height = formulario.ClientSize.Height - grilla.Top - (int)(20 * _escala);
                 }
+                grilla.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             }
         }
 
@@ -95,10 +113,14 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             // Si la pantalla agrandada no entra en el área visible del monitor, se reduce la escala
             // (sin bajar de 1) para que no quede cortada. Se cuenta también el alto del encabezado.
             Rectangle area = SystemInformation.WorkingArea;
-            float extra = 0;
+            float extra;
             if (conEncabezado)
             {
                 extra = AlturaEncabezado * formulario.DeviceDpi / 96f;
+            }
+            else
+            {
+                extra = AlturaVentanaPrincipal * formulario.DeviceDpi / 96f;
             }
             float maxAncho = area.Width * 0.95f / formulario.Width;
             float maxAlto = area.Height * 0.95f / (formulario.Height + extra);
@@ -303,5 +325,109 @@ namespace Luciano_Integrador_Evaluativo_Final.View
                 grilla.Columns[nombreColumna].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             }
         }
+
+        // Estilo de la ventana principal: barra superior oscura con el título de la aplicación y las
+        // pestañas (botones planos), y el panel de contenido con el fondo claro de las pantallas.
+        public static void EstilarBarra(Panel barra, Label titulo, Panel contenido)
+        {
+            barra.BackColor = ColorBarra;
+            titulo.BackColor = Color.Transparent;
+            titulo.ForeColor = ColorTextoBarraActivo;
+            titulo.Font = new Font("Segoe UI Semibold", 13F);
+            contenido.BackColor = ColorFondo;
+
+            foreach (Control control in barra.Controls)
+            {
+                Button? pestana = control as Button;
+                if (pestana != null)
+                {
+                    EstilarPestana(pestana);
+                }
+            }
+
+            UsarBarraDeTituloOscura(barra.FindForm());
+        }
+
+        // Una pestaña es un botón plano, sin borde, con texto gris que se aclara al pasar el mouse.
+        private static void EstilarPestana(Button pestana)
+        {
+            pestana.FlatStyle = FlatStyle.Flat;
+            pestana.FlatAppearance.BorderSize = 0;
+            pestana.FlatAppearance.MouseOverBackColor = ColorBarraHover;
+            pestana.FlatAppearance.MouseDownBackColor = ColorBarraHover;
+            pestana.UseVisualStyleBackColor = false;
+            pestana.BackColor = ColorBarra;
+            pestana.ForeColor = ColorTextoBarra;
+            pestana.Font = new Font("Segoe UI", 10.5F);
+            pestana.Cursor = Cursors.Hand;
+            pestana.Paint += DibujarMarcaPestana;
+        }
+
+        // Marca una pestaña como la abierta (texto claro, fondo resaltado y línea de acento debajo)
+        // o la deja como una pestaña común.
+        public static void MarcarPestana(Button pestana, bool activa)
+        {
+            if (activa)
+            {
+                pestana.Tag = "activa";
+                pestana.ForeColor = ColorTextoBarraActivo;
+                pestana.BackColor = ColorBarraHover;
+            }
+            else
+            {
+                pestana.Tag = null;
+                pestana.ForeColor = ColorTextoBarra;
+                pestana.BackColor = ColorBarra;
+            }
+            pestana.Invalidate();
+        }
+
+        // Dibuja la línea de acento en el borde inferior de la pestaña abierta.
+        private static void DibujarMarcaPestana(object? sender, PaintEventArgs e)
+        {
+            Button? pestana = sender as Button;
+            if (pestana != null && "activa".Equals(pestana.Tag))
+            {
+                using (SolidBrush marca = new SolidBrush(ColorAcentoClaro))
+                {
+                    e.Graphics.FillRectangle(marca, 0, pestana.Height - 4, pestana.Width, 4);
+                }
+            }
+        }
+
+        // Pide a Windows (10 20H1 en adelante) la barra de título oscura, para que combine con la barra
+        // de pestañas. En versiones anteriores no hace nada.
+        private static void UsarBarraDeTituloOscura(Form? formulario)
+        {
+            if (formulario == null)
+                return;
+
+            if (formulario.IsHandleCreated)
+            {
+                ActivarBarraOscura(formulario);
+            }
+            else
+            {
+                formulario.HandleCreated += AlCrearseLaVentana;
+            }
+        }
+
+        private static void AlCrearseLaVentana(object? sender, EventArgs e)
+        {
+            Form? formulario = sender as Form;
+            if (formulario != null)
+            {
+                ActivarBarraOscura(formulario);
+            }
+        }
+
+        private static void ActivarBarraOscura(Form formulario)
+        {
+            int activado = 1;
+            DwmSetWindowAttribute(formulario.Handle, 20, ref activado, sizeof(int));
+        }
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int atributo, ref int valor, int tamanio);
     }
 }

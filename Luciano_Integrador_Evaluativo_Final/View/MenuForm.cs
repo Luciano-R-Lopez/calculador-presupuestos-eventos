@@ -26,10 +26,16 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private int _idEditando;
 
         // Arma la pantalla: aplica el estilo, crea los Controllers, carga la lista de platillos, las aptitudes y la grilla.
-        public MenuForm()
+        public MenuForm() : this(false)
+        {
+        }
+
+        // Si embebido es true la pantalla se muestra dentro de la ventana principal (en una pestaña), sin encabezado
+        // propio. Si es false se muestra como ventana aparte (por ejemplo desde "+ Agregar nuevo...").
+        public MenuForm(bool embebido)
         {
             InitializeComponent();
-            Estilo.Aplicar(this);
+            Estilo.Aplicar(this, !embebido);
             _controller = new MenuController();
             _platilloController = new PlatilloController();
             _idsPlatillosTildados = new List<int>();
