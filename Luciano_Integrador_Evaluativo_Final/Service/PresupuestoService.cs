@@ -194,13 +194,53 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
 
         // Busca el presupuesto (error si no existe) y le pide cambiar de estado; el flujo permitido lo controla
         // el propio Presupuesto (Nuevo -> Enviado -> Pagado).
+        // Al pasar de Enviado a Pagado el lugar queda reservado, así que antes se comprueba que no se
+        // superponga con otro presupuesto ya pagado en el mismo lugar.
         public void CambiarEstado(int id, EstadoPresupuesto estado)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
             if (presupuesto == null)
                 throw new ArgumentException("El presupuesto no existe.");
 
+            if (presupuesto.Estado == EstadoPresupuesto.Enviado && estado == EstadoPresupuesto.Pagado)
+            {
+                ValidarSuperposicion(presupuesto);
+            }
+
             presupuesto.CambiarEstado(estado);
+        }
+
+        // Un evento ocupa el lugar desde su hora de inicio hasta que terminan sus horas de duración.
+        // Dos eventos del mismo lugar se superponen si cada uno empieza antes de que termine el otro
+        // (si uno termina justo cuando empieza el otro, no se superponen). Solo se comparan con los
+        // presupuestos ya pagados: las cotizaciones (Nuevo y Enviado) no reservan el lugar.
+        private void ValidarSuperposicion(Presupuesto presupuesto)
+        {
+            if (presupuesto.Lugar == null)
+                return;
+
+            DateTime inicio = presupuesto.FechaEvento;
+            DateTime fin = presupuesto.FechaEvento.AddHours(presupuesto.CantidadHoras);
+
+            foreach (Presupuesto otro in _repository.GetTodos())
+            {
+                if (otro.Id == presupuesto.Id || otro.Estado != EstadoPresupuesto.Pagado || otro.Lugar == null)
+                    continue;
+
+                if (otro.Lugar.Id != presupuesto.Lugar.Id)
+                    continue;
+
+                DateTime inicioOtro = otro.FechaEvento;
+                DateTime finOtro = otro.FechaEvento.AddHours(otro.CantidadHoras);
+
+                if (inicio < finOtro && inicioOtro < fin)
+                {
+                    throw new InvalidOperationException("No se puede marcar como pagado: " + presupuesto.Lugar.Nombre
+                        + " ya está reservado por el presupuesto N° " + otro.Id + " (pagado) el "
+                        + inicioOtro.ToString("dd/MM/yyyy") + " de " + inicioOtro.ToString("HH:mm")
+                        + " a " + finOtro.ToString("HH:mm") + ", y se superpone con este horario.");
+                }
+            }
         }
 
         // Busca el presupuesto, le pide una copia (ClonarPresupuesto) y la guarda como un presupuesto nuevo.

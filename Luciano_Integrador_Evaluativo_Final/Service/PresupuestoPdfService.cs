@@ -56,7 +56,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             }
 
             Escribir("Evento", _fuenteNegrita);
-            Escribir("Fecha del evento: " + presupuesto.FechaEvento.ToString("dd/MM/yyyy"), _fuenteNormal);
+            Escribir("Inicio del evento: " + presupuesto.FechaEvento.ToString("dd/MM/yyyy HH:mm"), _fuenteNormal);
             Escribir("Duración: " + presupuesto.CantidadHoras + " horas", _fuenteNormal);
             if (presupuesto.Lugar != null)
             {

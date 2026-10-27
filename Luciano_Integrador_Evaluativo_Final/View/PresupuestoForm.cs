@@ -54,6 +54,9 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         {
             InitializeComponent();
             Estilo.Aplicar(this, !embebido);
+
+            // La hora de inicio arranca en las 20:00 (un horario habitual para un evento); se puede cambiar.
+            dateTimePickerHora.Value = DateTime.Today.AddHours(20);
             _controller = new PresupuestoController();
             _clienteController = new ClienteController();
             _lugarController = new LugarEventoController();
@@ -264,7 +267,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             AgregarColumna("MontoTotal", "Monto total");
 
             dataGridViewPresupuestos.Columns["colFechaCreacion"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
-            dataGridViewPresupuestos.Columns["colFechaEvento"].DefaultCellStyle.Format = "dd/MM/yyyy";
+            dataGridViewPresupuestos.Columns["colFechaEvento"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
             Estilo.FormatoMoneda(dataGridViewPresupuestos, "colMontoTotal");
 
             // Id y Horas son datos cortos: se les da menos ancho que al resto.
@@ -310,8 +313,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
             List<int> idsServicios = new List<int>(_idsServiciosTildados);
 
+            // La fecha y la hora de inicio se eligen en dos selectores: se toma el día del primero y la
+            // hora del segundo (Date + TimeOfDay) para armar el DateTime con el inicio del evento.
             return new PresupuestoDTO(
-                dateTimePickerEvento.Value,
+                dateTimePickerEvento.Value.Date + dateTimePickerHora.Value.TimeOfDay,
                 (int)numericUpDownHoras.Value,
                 idCliente,
                 idLugar,
@@ -433,6 +438,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
             _idEditando = seleccionado.Id;
             dateTimePickerEvento.Value = seleccionado.FechaEvento;
+            dateTimePickerHora.Value = seleccionado.FechaEvento;
             numericUpDownHoras.Value = seleccionado.CantidadHoras;
 
             // Se vuelve a cargar cada combo dejando elegidos el cliente y el lugar del presupuesto.

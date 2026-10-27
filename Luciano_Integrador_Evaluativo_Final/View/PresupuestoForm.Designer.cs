@@ -25,6 +25,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             labelMenu = new Label();
             labelMonto = new Label();
             dateTimePickerEvento = new DateTimePicker();
+            dateTimePickerHora = new DateTimePicker();
             numericUpDownHoras = new NumericUpDown();
             comboBoxCliente = new ComboBox();
             comboBoxLugar = new ComboBox();
@@ -57,13 +58,14 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             labelFecha.Name = "labelFecha";
             labelFecha.Size = new Size(107, 20);
             labelFecha.TabIndex = 0;
-            labelFecha.Text = "Fecha del evento";
+            labelFecha.Text = "Fecha y hora de inicio del evento";
             //
             // dateTimePickerEvento
             //
             dateTimePickerEvento.Location = new Point(20, 33);
             dateTimePickerEvento.Name = "dateTimePickerEvento";
-            dateTimePickerEvento.Size = new Size(300, 27);
+            dateTimePickerEvento.Size = new Size(190, 27);
+            dateTimePickerEvento.Format = DateTimePickerFormat.Short;
             dateTimePickerEvento.TabIndex = 1;
             //
             // labelHoras
@@ -322,6 +324,16 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             btnEliminar.Text = "Eliminar";
             btnEliminar.UseVisualStyleBackColor = true;
             btnEliminar.Click += btnEliminar_Click;
+            // 
+            // dateTimePickerHora
+            // 
+            dateTimePickerHora.CustomFormat = "HH:mm";
+            dateTimePickerHora.Format = DateTimePickerFormat.Custom;
+            dateTimePickerHora.Location = new Point(220, 33);
+            dateTimePickerHora.Name = "dateTimePickerHora";
+            dateTimePickerHora.ShowUpDown = true;
+            dateTimePickerHora.Size = new Size(100, 27);
+            dateTimePickerHora.TabIndex = 25;
             //
             // PresupuestoForm
             //
@@ -333,6 +345,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             Controls.Add(btnEditar);
             Controls.Add(labelFecha);
             Controls.Add(dateTimePickerEvento);
+            Controls.Add(dateTimePickerHora);
             Controls.Add(labelHoras);
             Controls.Add(numericUpDownHoras);
             Controls.Add(labelCliente);
@@ -375,6 +388,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private Label labelMenu;
         private Label labelMonto;
         private DateTimePicker dateTimePickerEvento;
+        private DateTimePicker dateTimePickerHora;
         private NumericUpDown numericUpDownHoras;
         private ComboBox comboBoxCliente;
         private ComboBox comboBoxLugar;
