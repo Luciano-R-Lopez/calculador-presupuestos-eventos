@@ -25,7 +25,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         public static readonly Color ColorBarraHover = Color.FromArgb(35, 40, 49);
         public static readonly Color ColorTextoBarra = Color.FromArgb(154, 163, 174);
         public static readonly Color ColorTextoBarraActivo = Color.FromArgb(227, 230, 234);
-        public static readonly Color ColorAcentoClaro = Color.FromArgb(143, 179, 230);
 
         // Altura del encabezado que se agrega a cada pantalla.
         private const int AlturaEncabezado = 56;
@@ -360,38 +359,23 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             pestana.ForeColor = ColorTextoBarra;
             pestana.Font = new Font("Segoe UI", 10.5F);
             pestana.Cursor = Cursors.Hand;
-            pestana.Paint += DibujarMarcaPestana;
+
+            // Las pestañas no reciben el foco con Tab: así no se dibuja el recuadro de foco sobre ellas.
+            pestana.TabStop = false;
         }
 
-        // Marca una pestaña como la abierta (texto claro, fondo resaltado y línea de acento debajo)
-        // o la deja como una pestaña común.
+        // Marca una pestaña como la abierta (texto claro y fondo resaltado) o la deja como una pestaña común.
         public static void MarcarPestana(Button pestana, bool activa)
         {
             if (activa)
             {
-                pestana.Tag = "activa";
                 pestana.ForeColor = ColorTextoBarraActivo;
                 pestana.BackColor = ColorBarraHover;
             }
             else
             {
-                pestana.Tag = null;
                 pestana.ForeColor = ColorTextoBarra;
                 pestana.BackColor = ColorBarra;
-            }
-            pestana.Invalidate();
-        }
-
-        // Dibuja la línea de acento en el borde inferior de la pestaña abierta.
-        private static void DibujarMarcaPestana(object? sender, PaintEventArgs e)
-        {
-            Button? pestana = sender as Button;
-            if (pestana != null && "activa".Equals(pestana.Tag))
-            {
-                using (SolidBrush marca = new SolidBrush(ColorAcentoClaro))
-                {
-                    e.Graphics.FillRectangle(marca, 0, pestana.Height - 4, pestana.Width, 4);
-                }
             }
         }
 

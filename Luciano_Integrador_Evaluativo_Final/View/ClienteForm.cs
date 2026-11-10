@@ -9,7 +9,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 {
     // Pantalla de clientes: formulario para cargar, editar y eliminar, con la grilla de los ya cargados.
     // Solo captura datos y muestra resultados; las reglas están en el Service.
-    public partial class ClienteForm : Form
+    public partial class ClienteForm : Form, IPantallaActualizable
     {
         private ClienteController _controller;
 
@@ -143,6 +143,13 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _idEditando = 0;
             Agregar.Text = "Agregar";
             btnCancelar.Visible = false;
+        }
+
+        // Al volver a la pestaña se relee la grilla (los datos pudieron cambiar desde otra pantalla).
+        // Lo que estaba escrito en los campos no se toca.
+        public void ActualizarDatos()
+        {
+            RefrescarGrilla();
         }
 
         // Vuelve a cargar la grilla con la lista actual que devuelve el Controller.

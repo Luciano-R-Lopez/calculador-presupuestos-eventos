@@ -46,6 +46,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             btnCambiarEstado = new Button();
             btnClonar = new Button();
             btnGenerarPdf = new Button();
+            btnCerrarVista = new Button();
             ((System.ComponentModel.ISupportInitialize)numericUpDownHoras).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDownCantidad).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewPresupuestos).BeginInit();
@@ -243,6 +244,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             dataGridViewPresupuestos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridViewPresupuestos.Size = new Size(730, 550);
             dataGridViewPresupuestos.TabIndex = 19;
+            dataGridViewPresupuestos.SelectionChanged += dataGridViewPresupuestos_SelectionChanged;
             //
             // comboBoxEstado
             //
@@ -292,6 +294,18 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             textBoxBuscarServicio.TabIndex = 24;
             textBoxBuscarServicio.TextChanged += textBoxBuscarServicio_TextChanged;
             // 
+            // btnCerrarVista
+            //
+            btnCerrarVista.Location = new Point(20, 645);
+            btnCerrarVista.Name = "btnCerrarVista";
+            btnCerrarVista.Tag = "secundario";
+            btnCerrarVista.Size = new Size(300, 32);
+            btnCerrarVista.TabIndex = 42;
+            btnCerrarVista.Text = "Cerrar vista";
+            btnCerrarVista.UseVisualStyleBackColor = true;
+            btnCerrarVista.Visible = false;
+            btnCerrarVista.Click += btnCerrarVista_Click;
+            //
             // btnEditar
             // 
             btnEditar.Location = new Point(770, 599);
@@ -343,6 +357,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             Controls.Add(btnEliminar);
             Controls.Add(btnCancelarEdicion);
             Controls.Add(btnEditar);
+            Controls.Add(btnCerrarVista);
             Controls.Add(labelFecha);
             Controls.Add(dateTimePickerEvento);
             Controls.Add(dateTimePickerHora);
@@ -409,5 +424,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private Button btnCambiarEstado;
         private Button btnClonar;
         private Button btnGenerarPdf;
+        private Button btnCerrarVista;
     }
 }

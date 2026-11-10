@@ -10,7 +10,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 {
     // Pantalla de menús: formulario para armar un menú (nombre, platillos y aptitudes), editarlo o eliminarlo.
     // Solo captura datos y muestra resultados; las reglas están en el Service.
-    public partial class MenuForm : Form
+    public partial class MenuForm : Form, IPantallaActualizable
     {
         private MenuController _controller;
         private PlatilloController _platilloController;
@@ -235,6 +235,14 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
 
             FiltrarPlatillos();
+        }
+
+        // Al volver a la pestaña se releen los platillos (pudieron agregarse en la pestaña Platillos) y la
+        // grilla. Lo que ya estaba escrito y tildado se conserva.
+        public void ActualizarDatos()
+        {
+            FiltrarPlatillos();
+            RefrescarGrilla();
         }
 
         // Vuelve a cargar la grilla con la lista actual de menús.
