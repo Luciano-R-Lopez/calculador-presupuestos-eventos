@@ -18,13 +18,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             _telefono = "";
             _email = "";
         }
-        public Cliente(int id, string nom, string tel, string email)
-        {
-            Id = id;
-            Nombre = nom;
-            Telefono = tel;
-            Email = email;
-        }
         // Cliente nuevo: la base le asigna el id.
         public Cliente(string nom, string tel, string email)
         {

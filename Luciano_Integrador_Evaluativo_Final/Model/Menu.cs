@@ -26,14 +26,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             _platillos = new List<Platillo>();
             _aptitud = new List<Aptitud>();
         }
-        public Menu(int id, string nombre)
-        {
-            Id = id;
-            Nombre = nombre;
-            _platillos = new List<Platillo>();
-            _aptitud = new List<Aptitud>();
-        }
-        // Platillos y Aptitudes se modifican con los métodos Agregar/Eliminar.
         public int Id
         {
             get { return _id; }
@@ -49,6 +41,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             get { return _montoTotal; }
             set { _montoTotal = value; }
         }
+        // Platillos y Aptitudes se modifican con los métodos Agregar/Eliminar.
         public List<Platillo> Platillos
         {
             get { return _platillos; }
@@ -88,21 +81,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             }
             MontoTotal = total;
             return MontoTotal;
-        }
-
-        // Copia con el mismo id, incluidos sus platillos y aptitudes.
-        public Menu Copiar()
-        {
-            Menu copia = new Menu(Id, Nombre);
-            foreach (Platillo platillo in _platillos)
-            {
-                copia.AgregarPlatillo(platillo.Copiar());
-            }
-            foreach (Aptitud aptitud in _aptitud)
-            {
-                copia.AgregarAptitud(aptitud);
-            }
-            return copia;
         }
 
         // Se muestra por su nombre en combos y grillas.

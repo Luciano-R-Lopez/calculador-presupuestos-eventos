@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Luciano_Integrador_Evaluativo_Final.Model
 {
-    // Lugar del evento con su precio base.
-    internal class LugarEvento : IItemPresupuesto
+    // Lugar del evento con su precio base (catálogo). El presupuesto guarda su precio al cotizar en PrecioLugar.
+    internal class LugarEvento
     {
         private int _id;
         private string _nombre;
@@ -14,12 +14,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         private LugarEvento()
         {
             _nombre = "";
-        }
-        public LugarEvento(int id, string nom, decimal precio)
-        {
-            Id = id;
-            Nombre = nom;
-            Precio = precio;
         }
         // Lugar nuevo: la base le asigna el id.
         public LugarEvento(string nom, decimal precio)
@@ -43,33 +37,10 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             set { _precio = value; }
         }
 
-        // Copia con el mismo id.
-        public LugarEvento Copiar()
-        {
-            return new LugarEvento(Id, Nombre, Precio);
-        }
-
         // Se muestra por su nombre en combos y grillas.
         public override string ToString()
         {
             return Nombre;
-        }
-
-        // IItemPresupuesto
-
-        public string Descripcion
-        {
-            get { return "Lugar: " + Nombre; }
-        }
-
-        public decimal CalcularMonto()
-        {
-            return Precio;
-        }
-
-        public IItemPresupuesto CopiarItem()
-        {
-            return Copiar();
         }
     }
 }

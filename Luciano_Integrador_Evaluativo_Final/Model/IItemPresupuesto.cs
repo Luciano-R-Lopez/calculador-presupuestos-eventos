@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace Luciano_Integrador_Evaluativo_Final.Model
 {
-    // Todo lo que se cobra en un presupuesto. Cada ítem calcula su monto (polimorfismo), así un tipo nuevo se suma sin cambiar el presupuesto.
+    // Renglón de un presupuesto (ServicioPresupuestado, ItemMenu): lo que se cobra, con su precio al cotizar.
+    // Cada renglón calcula su monto (polimorfismo), así un tipo nuevo se suma sin cambiar el presupuesto.
     internal interface IItemPresupuesto
     {
         // Texto del ítem (por ejemplo, en el PDF).
@@ -12,7 +13,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         // Monto que suma al presupuesto.
         decimal CalcularMonto();
 
-        // Copia independiente del ítem.
+        // Renglón nuevo con los mismos datos y precio (para clonar).
         IItemPresupuesto CopiarItem();
     }
 }

@@ -16,13 +16,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         {
             _nombre = "";
         }
-        public Platillo(int id, string nombre, decimal precio, TipoPlatillo tipo)
-        {
-            Id = id;
-            Nombre = nombre;
-            Precio = precio;
-            Tipo = tipo;
-        }
         // Platillo nuevo: la base le asigna el id.
         public Platillo(string nombre, decimal precio, TipoPlatillo tipo)
         {
@@ -49,12 +42,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         {
             get { return _tipo; }
             set { _tipo = value; }
-        }
-
-        // Copia con el mismo id.
-        public Platillo Copiar()
-        {
-            return new Platillo(Id, Nombre, Precio, Tipo);
         }
 
         // Se muestra por su nombre en combos y grillas.

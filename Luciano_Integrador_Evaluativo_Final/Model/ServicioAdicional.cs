@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Luciano_Integrador_Evaluativo_Final.Model
 {
-    // Servicio extra con precio fijo.
-    internal class ServicioAdicional : IItemPresupuesto
+    // Servicio extra con precio fijo (catálogo). En el presupuesto se cobra a través de ServicioPresupuestado.
+    internal class ServicioAdicional
     {
         private int _id;
         private string _nombre;
@@ -15,18 +15,11 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         {
             _nombre = "";
         }
-        public ServicioAdicional(int id, string nom, decimal precio)
-        {
-            Id = id;
-            Nombre = nom;
-            Precio = precio;
-        }
         // Servicio nuevo: la base le asigna el id.
         public ServicioAdicional(string nom, decimal precio)
         {
             Nombre = nom;
             Precio = precio;
-
         }
         public int Id
         {
@@ -44,33 +37,10 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             set { _precio = value; }
         }
 
-        // Copia con el mismo id.
-        public ServicioAdicional Copiar()
-        {
-            return new ServicioAdicional(Id, Nombre, Precio);
-        }
-
         // Se muestra por su nombre en combos y grillas.
         public override string ToString()
         {
             return Nombre;
-        }
-
-        // IItemPresupuesto
-
-        public string Descripcion
-        {
-            get { return Nombre; }
-        }
-
-        public decimal CalcularMonto()
-        {
-            return Precio;
-        }
-
-        public IItemPresupuesto CopiarItem()
-        {
-            return Copiar();
         }
     }
 }

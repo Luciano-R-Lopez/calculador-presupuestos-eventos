@@ -27,11 +27,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             PrecioMenu = menu.CalcularMonto();
             CalcularMonto();
         }
-        public ItemMenu(int id, int cantidad, Menu menu, bool paraAdulto)
-            : this(cantidad, menu, paraAdulto)
-        {
-            Id = id;
-        }
         public int Id
         {
             get { return _id; }
