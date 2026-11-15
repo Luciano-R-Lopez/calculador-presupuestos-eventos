@@ -143,11 +143,24 @@ actualizado son los datos descriptivos, como el nombre o el teléfono.
   y precios, y se inserta como uno más.
 - **Editar** (`PresupuestoService.ActualizarPresupuesto`): vuelve a cotizar con los precios actuales.
 
+### Catálogo y renglones
+
+El modelo separa **lo que se ofrece** de **lo que se cobró**:
+
+| Catálogo (datos vigentes) | Renglón del presupuesto (precio al cotizar) |
+|---|---|
+| `LugarEvento` | columna `Presupuesto.PrecioLugar` (un solo lugar por presupuesto) |
+| `ServicioAdicional` | `ServicioPresupuestado` |
+| `Menu` (con sus `Platillo`) | `ItemMenu` |
+
+Las clases del catálogo (`Cliente`, `LugarEvento`, `ServicioAdicional`, `Menu`, `Platillo`) solo tienen sus
+datos. Los renglones apuntan al catálogo, guardan el precio de ese momento y saben calcular su monto.
+
 ### Polimorfismo: `IItemPresupuesto`
 
-Los renglones (`ServicioPresupuestado`, `ItemMenu`) implementan `IItemPresupuesto`: cada uno sabe
-describirse y calcular su monto. `Presupuesto.CalcularMonto` los recorre sin conocer su tipo, así que un
-tipo de ítem nuevo se suma sin cambiar ese método.
+Solo los renglones (`ServicioPresupuestado`, `ItemMenu`) implementan `IItemPresupuesto`: cada uno sabe
+describirse, calcular su monto con el precio guardado y copiarse para clonar. `Presupuesto.CalcularMonto`
+los recorre sin conocer su tipo, así que un tipo de ítem nuevo se suma sin cambiar ese método.
 
 ---
 

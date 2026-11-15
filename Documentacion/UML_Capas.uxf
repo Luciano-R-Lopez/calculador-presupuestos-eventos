@@ -425,13 +425,11 @@ bg=#ffe0c2</panel_attributes>
       <x>2061</x>
       <y>868</y>
       <w>299</w>
-      <h>106</h>
+      <h>70</h>
     </coordinates>
     <panel_attributes>LugarEvento
 -
 _id, _nombre, _precio
--
-implementa IItemPresupuesto
 bg=#e6e6e6</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -520,13 +518,11 @@ bg=#ffe0c2</panel_attributes>
       <x>2061</x>
       <y>1132</y>
       <w>299</w>
-      <h>106</h>
+      <h>70</h>
     </coordinates>
     <panel_attributes>ServicioAdicional
 -
 _id, _nombre, _precio
--
-implementa IItemPresupuesto
 bg=#e6e6e6</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
