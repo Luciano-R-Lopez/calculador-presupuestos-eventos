@@ -6,7 +6,7 @@ using System;
 
 namespace Luciano_Integrador_Evaluativo_Final.Service
 {
-    // Service que genera el PDF con el detalle de un presupuesto, para entregarlo al cliente.
+    // Genera el PDF de un presupuesto.
     internal class PresupuestoPdfService
     {
         private const double Margen = 50;
@@ -20,14 +20,10 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
         private XFont _fuenteTitulo;
         private double _y;
 
-        // Esta clase usa PDFsharp, una librería externa (paquete NuGet) para crear PDFs desde código.
-        // Se eligió porque .NET no trae soporte nativo para generar PDF y PDFsharp es gratuita (6.2.0;
-        // la 6.5.0 exige licencia). Se separó en su propio Service para que la lógica de armado del
-        // PDF no se mezcle con la del presupuesto ni con la View.
+        // Usa PDFsharp 6.2.0 (gratuita; la 6.5.0 exige licencia).
         public PresupuestoPdfService()
         {
-            // PDFsharp necesita saber de dónde sacar las fuentes. Esta opción le indica que use las
-            // que ya trae instaladas Windows (Arial), así no hay que incluir archivos de fuentes.
+            // Usa las fuentes instaladas en Windows (Arial).
             GlobalFontSettings.UseWindowsFontsUnderWindows = true;
             _documento = new PdfDocument();
             _fuenteNormal = new XFont("Arial", 11, XFontStyleEx.Regular);
@@ -35,9 +31,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _fuenteTitulo = new XFont("Arial", 18, XFontStyleEx.Bold);
         }
 
-        // Dibuja el presupuesto línea por línea, de arriba hacia abajo, y guarda el archivo.
-        // El texto se escribe con Escribir(), que va bajando la posición vertical (_y) y cambia de
-        // página cuando se acaba el espacio, así un presupuesto largo no se corta.
+        // Escribe línea por línea; Escribir() baja la posición y cambia de página si hace falta.
         public void Generar(Presupuesto presupuesto, string ruta)
         {
             _documento = new PdfDocument();
@@ -60,7 +54,8 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             Escribir("Duración: " + presupuesto.CantidadHoras + " horas", _fuenteNormal);
             if (presupuesto.Lugar != null)
             {
-                Escribir("Lugar: " + presupuesto.Lugar.Nombre + " - " + presupuesto.Lugar.Precio.ToString("C"), _fuenteNormal, 10);
+                // Precio guardado al cotizar.
+                Escribir("Lugar: " + presupuesto.Lugar.Nombre + " - " + presupuesto.PrecioLugar.ToString("C"), _fuenteNormal, 10);
             }
 
             Escribir("Menús", _fuenteNegrita);
@@ -95,15 +90,14 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             if (presupuesto.ServiciosAdicionales.Count > 0)
             {
                 Escribir("Servicios adicionales", _fuenteNegrita);
-                foreach (ServicioAdicional servicio in presupuesto.ServiciosAdicionales)
+                foreach (ServicioPresupuestado renglon in presupuesto.ServiciosAdicionales)
                 {
-                    Escribir(servicio.Nombre + " - " + servicio.Precio.ToString("C"), _fuenteNormal);
+                    Escribir(renglon.Servicio.Nombre + " - " + renglon.Precio.ToString("C"), _fuenteNormal);
                 }
                 _y += 10;
             }
 
-            // Ítems de cualquier otro tipo: el PDF los detalla con la Descripcion y el monto que cada uno
-            // informa a través de IItemPresupuesto, sin conocer su clase concreta.
+            // Otros ítems: se detallan a través de IItemPresupuesto.
             if (presupuesto.ItemsExtra.Count > 0)
             {
                 Escribir("Otros ítems", _fuenteNegrita);
@@ -116,14 +110,12 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
 
             Escribir("TOTAL: " + presupuesto.MontoTotal.ToString("C"), _fuenteTitulo);
 
-            // Dispose libera el objeto de dibujo de la página; debe hacerse antes de guardar para
-            // que todo lo dibujado quede escrito en el documento.
+            // Dispose antes de guardar, para que se escriba todo lo dibujado.
             _grafico.Dispose();
             _documento.Save(ruta);
         }
 
-        // Agrega una página en blanco y reinicia la posición de escritura al margen superior.
-        // XGraphics es el "lienzo" de PDFsharp sobre el que se dibuja el texto de esa página.
+        // Página nueva; XGraphics es el lienzo donde se dibuja.
         private void NuevaPagina()
         {
             _pagina = _documento.AddPage();
@@ -131,13 +123,12 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _y = Margen;
         }
 
-        // Escribe una línea de texto sin dejar espacio adicional debajo.
         private void Escribir(string texto, XFont fuente)
         {
             Escribir(texto, fuente, 0);
         }
 
-        // Escribe una línea de texto y baja la posición. "espacioExtra" es el espacio que se deja debajo.
+        // "espacioExtra": espacio que se deja debajo de la línea.
         private void Escribir(string texto, XFont fuente, double espacioExtra)
         {
             if (_y + AlturaLinea > _pagina.Height.Point - Margen)

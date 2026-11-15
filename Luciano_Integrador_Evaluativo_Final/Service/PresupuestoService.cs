@@ -5,29 +5,25 @@ using System;
 
 namespace Luciano_Integrador_Evaluativo_Final.Service
 {
-    // Service: contiene la lógica de negocio (validaciones y reglas). Usa el Repository para guardar y buscar.
-    // Es el Service principal: arma presupuestos a partir de un DTO, controla su edición y cambios de
-    // estado, y genera el PDF. Trabaja con los repositorios de cliente, lugar y servicios, y con ItemMenuService.
+    // Reglas de negocio de presupuestos: armado, edición, estados, clonación y PDF.
     internal class PresupuestoService
     {
-        private PresupuestoListRepository _repository;
-        private ClienteListRepository _clienteRepository;
-        private LugarEventoListRepository _lugarRepository;
-        private ServicioAdicionalListRepository _servicioRepository;
+        private PresupuestoRepository _repository;
+        private ClienteRepository _clienteRepository;
+        private LugarEventoRepository _lugarRepository;
+        private ServicioAdicionalRepository _servicioRepository;
         private ItemMenuService _itemMenuService;
 
-        // Obtiene los repositorios (Singleton) que necesita y crea el ItemMenuService.
         public PresupuestoService()
         {
-            _repository = PresupuestoListRepository.GetInstance();
-            _clienteRepository = ClienteListRepository.GetInstance();
-            _lugarRepository = LugarEventoListRepository.GetInstance();
-            _servicioRepository = ServicioAdicionalListRepository.GetInstance();
+            _repository = PresupuestoRepository.GetInstance();
+            _clienteRepository = ClienteRepository.GetInstance();
+            _lugarRepository = LugarEventoRepository.GetInstance();
+            _servicioRepository = ServicioAdicionalRepository.GetInstance();
             _itemMenuService = new ItemMenuService();
         }
 
-        // Reglas para registrar o editar: la fecha del evento no puede ser anterior a hoy, las horas deben
-        // ser mayores a cero y debe haber al menos un menú. Si falla alguna, lanza ArgumentException.
+        // Fecha no anterior a hoy, horas mayores a cero y al menos un menú.
         public void ValidarRegistro(PresupuestoDTO dto)
         {
             if (dto.FechaEvento.Date < DateTime.Today)
@@ -40,28 +36,25 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
                 throw new ArgumentException("El presupuesto debe tener al menos un menú.");
         }
 
-        // Arma el presupuesto a partir del DTO sin guardarlo. Cliente y lugar pueden quedar sin asignar.
-        // Cómo: busca cada dato por id en su repositorio, guarda una copia (Copiar) de cada uno, crea los
-        // ítems de menú y calcula el monto.
+        // Arma el presupuesto sin guardarlo (cliente y lugar pueden faltar) y calcula el monto.
         private Presupuesto Construir(PresupuestoDTO dto)
         {
             Presupuesto presupuesto = new Presupuesto();
             presupuesto.FechaEvento = dto.FechaEvento;
             presupuesto.CantidadHoras = dto.CantidadHoras;
 
-            // El presupuesto es un registro: guarda COPIAS del cliente, el lugar, los servicios y los
-            // menús tal como están en este momento. Si después se modifica un precio o un dato, los
-            // presupuestos ya generados no cambian (ni su monto ni su PDF).
+            // Guarda los precios actuales: si después cambian, el presupuesto no cambia.
             Cliente? cliente = _clienteRepository.GetPorId(dto.IdCliente);
             if (cliente != null)
             {
-                presupuesto.Cliente = cliente.Copiar();
+                presupuesto.Cliente = cliente;
             }
 
             LugarEvento? lugar = _lugarRepository.GetPorId(dto.IdLugar);
             if (lugar != null)
             {
-                presupuesto.Lugar = lugar.Copiar();
+                presupuesto.Lugar = lugar;
+                presupuesto.PrecioLugar = lugar.Precio;
             }
 
             if (dto.IdsServiciosAdicionales != null)
@@ -72,7 +65,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
                     if (servicio == null)
                         throw new ArgumentException("El servicio adicional con id " + idServicio + " no existe.");
 
-                    presupuesto.ServiciosAdicionales.Add(servicio.Copiar());
+                    presupuesto.ServiciosAdicionales.Add(new ServicioPresupuestado(servicio));
                 }
             }
 
@@ -86,15 +79,13 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             return presupuesto;
         }
 
-        // Devuelve el monto de lo cargado hasta el momento, sin guardar nada: arma el presupuesto y toma su total.
-        // Lo usa la View para mostrar el monto al instante.
+        // Monto de lo cargado hasta ahora, sin guardar (para mostrarlo al instante).
         public decimal CalcularMonto(PresupuestoDTO dto)
         {
             return Construir(dto).MontoTotal;
         }
 
-        // Valida el DTO, arma el presupuesto y comprueba que existan el cliente y el lugar. Guarda sus ítems
-        // de menú y el presupuesto en los repositorios.
+        // Cliente y lugar obligatorios. Los ítems se guardan junto con el presupuesto.
         public void RegistrarPresupuesto(PresupuestoDTO dto)
         {
             ValidarRegistro(dto);
@@ -107,15 +98,10 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             if (presupuesto.Lugar == null)
                 throw new ArgumentException("El lugar seleccionado no existe.");
 
-            foreach (ItemMenu item in presupuesto.Menus)
-                _itemMenuService.GuardarItemMenu(item);
-
             _repository.Agregar(presupuesto);
         }
 
-        // Comprueba que el presupuesto se pueda editar y lo devuelve. No se puede editar si ya está
-        // pagado ni si la fecha del evento ya pasó: en ambos casos queda como registro cerrado.
-        // Cómo: busca el presupuesto (error si no existe), y lanza un error si está pagado o si su evento ya pasó.
+        // No se puede editar si está pagado o si el evento ya pasó.
         public Presupuesto ValidarEdicion(int id)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
@@ -131,11 +117,8 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             return presupuesto;
         }
 
-        // Modifica el presupuesto existente. Se conservan su id, su fecha de creación y su estado.
-        // Al editarlo se vuelve a presupuestar: los datos y precios se toman nuevamente de los valores
-        // actuales. Primero se arma un presupuesto temporal para validar todo antes de tocar el original.
-        // Cómo: valida que se pueda editar, arma un presupuesto temporal con los datos nuevos y, si todo es
-        // válido, se los copia al original (listas incluidas) y recalcula el monto.
+        // Editar vuelve a cotizar con los precios actuales.
+        // Conserva id, fecha de creación y estado; valida con un presupuesto temporal antes de tocar el original.
         public void ActualizarPresupuesto(int id, PresupuestoDTO dto)
         {
             Presupuesto presupuesto = ValidarEdicion(id);
@@ -154,18 +137,15 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             presupuesto.CantidadHoras = temporal.CantidadHoras;
             presupuesto.Cliente = temporal.Cliente;
             presupuesto.Lugar = temporal.Lugar;
+            presupuesto.PrecioLugar = temporal.PrecioLugar;
 
             presupuesto.ServiciosAdicionales.Clear();
             presupuesto.ServiciosAdicionales.AddRange(temporal.ServiciosAdicionales);
 
-            // Los ítems de menú anteriores se eliminan del repositorio y se guardan los nuevos.
-            foreach (ItemMenu itemViejo in presupuesto.Menus)
-                _itemMenuService.EliminarItemMenu(itemViejo);
-
+            // Al guardar, la base borra los renglones anteriores e inserta los nuevos.
             presupuesto.Menus.Clear();
             foreach (ItemMenu itemNuevo in temporal.Menus)
             {
-                _itemMenuService.GuardarItemMenu(itemNuevo);
                 presupuesto.Menus.Add(itemNuevo);
             }
 
@@ -174,9 +154,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _repository.Update(presupuesto);
         }
 
-        // Un presupuesto pagado no se puede eliminar. Al eliminarlo se borran también sus ítems de menú,
-        // porque forman parte del presupuesto.
-        // Cómo: busca el presupuesto, rechaza si está pagado, elimina sus ítems de menú y lo elimina.
+        // No se puede eliminar si está pagado. Sus renglones se borran en cascada.
         public void EliminarPresupuesto(int id)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
@@ -186,16 +164,11 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             if (presupuesto.Estado == EstadoPresupuesto.Pagado)
                 throw new InvalidOperationException("No se puede eliminar un presupuesto pagado.");
 
-            foreach (ItemMenu item in presupuesto.Menus)
-                _itemMenuService.EliminarItemMenu(item);
-
             _repository.Delete(id);
         }
 
-        // Busca el presupuesto (error si no existe) y le pide cambiar de estado; el flujo permitido lo controla
-        // el propio Presupuesto (Nuevo -> Enviado -> Pagado).
-        // Al pasar de Enviado a Pagado el lugar queda reservado, así que antes se comprueba que no se
-        // superponga con otro presupuesto ya pagado en el mismo lugar.
+        // El flujo de estados lo controla Presupuesto.
+        // Al pasar a Pagado se reserva el lugar: se valida que no se superponga con otro pagado.
         public void CambiarEstado(int id, EstadoPresupuesto estado)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
@@ -208,12 +181,11 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             }
 
             presupuesto.CambiarEstado(estado);
+            _repository.Update(presupuesto);
         }
 
-        // Un evento ocupa el lugar desde su hora de inicio hasta que terminan sus horas de duración.
-        // Dos eventos del mismo lugar se superponen si cada uno empieza antes de que termine el otro
-        // (si uno termina justo cuando empieza el otro, no se superponen). Solo se comparan con los
-        // presupuestos ya pagados: las cotizaciones (Nuevo y Enviado) no reservan el lugar.
+        // Se superponen si cada evento empieza antes de que termine el otro.
+        // Solo cuentan los pagados (las cotizaciones no reservan el lugar).
         private void ValidarSuperposicion(Presupuesto presupuesto)
         {
             if (presupuesto.Lugar == null)
@@ -243,7 +215,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             }
         }
 
-        // Busca el presupuesto, le pide una copia (ClonarPresupuesto) y la guarda como un presupuesto nuevo.
+        // Copia en memoria insertada como presupuesto nuevo.
         public void ClonarPresupuesto(int id)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
@@ -253,7 +225,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _repository.Agregar(presupuesto.ClonarPresupuesto());
         }
 
-        // Busca el presupuesto, comprueba la ruta y le pide a PresupuestoPdfService que genere el archivo PDF.
         public void GenerarPdf(int id, string ruta)
         {
             Presupuesto? presupuesto = _repository.GetPorId(id);
@@ -267,7 +238,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             pdfService.Generar(presupuesto, ruta);
         }
 
-        // Devuelve la lista de presupuestos que tiene guardada el Repository.
         public List<Presupuesto> GetPresupuestos()
         {
             return _repository.GetTodos();

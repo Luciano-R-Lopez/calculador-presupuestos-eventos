@@ -7,22 +7,19 @@ using System.Windows.Forms;
 
 namespace Luciano_Integrador_Evaluativo_Final.View
 {
-    // Pantalla de servicios adicionales: formulario para cargar, editar y eliminar, con la grilla de los ya cargados.
-    // Solo captura datos y muestra resultados; las reglas están en el Service.
+    // Pantalla de servicios adicionales: alta, edición y baja.
     public partial class ServicioAdicionalForm : Form, IPantallaActualizable
     {
         private ServicioAdicionalController _controller;
 
-        // Id del servicio que se está editando. En 0 el formulario está en modo "agregar".
+        // Id en edición; 0 = modo agregar.
         private int _idEditando;
 
-        // Arma la pantalla: aplica el estilo, crea el Controller, carga la grilla y deja el formulario en modo agregar.
         public ServicioAdicionalForm() : this(false)
         {
         }
 
-        // Si embebido es true la pantalla se muestra dentro de la ventana principal (en una pestaña), sin encabezado
-        // propio. Si es false se muestra como ventana aparte (por ejemplo desde "+ Agregar nuevo...").
+        // embebido = dentro de una pestaña (sin encabezado); si no, ventana aparte.
         public ServicioAdicionalForm(bool embebido)
         {
             InitializeComponent();
@@ -32,13 +29,11 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             SalirDeEdicion();
         }
 
-        // Botón Agregar/Guardar: arma el DTO con lo escrito y lo envía al Controller, y refresca la grilla.
-        // En modo edición guarda los cambios del elemento; si no, agrega uno nuevo. Los errores se muestran en un cuadro.
+        // Agrega o guarda cambios según el modo.
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             try
             {
-                // Convierte el texto a decimal. Si no es un número válido, avisa y corta antes de continuar.
                 decimal precio;
                 if (!decimal.TryParse(textBoxPrecioServicio.Text, out precio))
                 {
@@ -52,7 +47,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
                     precio
                 );
 
-                // El mismo botón agrega o guarda cambios según el modo en que esté el formulario.
                 if (_idEditando == 0)
                 {
                     _controller.RegistrarServicioAdicional(dto);
@@ -72,7 +66,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Carga en los campos el servicio seleccionado en la grilla y pasa a modo edición.
+        // Carga el seleccionado en los campos y pasa a modo edición.
         private void btnEditar_Click(object sender, EventArgs e)
         {
             ServicioAdicional? servicio = null;
@@ -96,8 +90,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             btnCancelar.Visible = true;
         }
 
-        // Elimina el servicio seleccionado en la grilla, previa confirmación. Si está en uso, el Service
-        // lo rechaza con un mensaje y no se borra.
+        // Pide confirmación; el Service lo rechaza si está en uso.
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             ServicioAdicional? seleccionado = null;
@@ -122,7 +115,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             {
                 _controller.EliminarServicioAdicional(seleccionado.Id);
 
-                // Si se eliminó justo el que se estaba editando, se sale del modo edición.
                 if (_idEditando == seleccionado.Id)
                 {
                     LimpiarCampos();
@@ -137,14 +129,12 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Botón Cancelar: descarta lo escrito y vuelve al modo agregar.
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
             SalirDeEdicion();
         }
 
-        // Vuelve al modo agregar: sin elemento en edición, botón con el texto Agregar y sin botón Cancelar.
         private void SalirDeEdicion()
         {
             _idEditando = 0;
@@ -152,21 +142,18 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             btnCancelar.Visible = false;
         }
 
-        // Al volver a la pestaña se relee la grilla (los datos pudieron cambiar desde otra pantalla).
-        // Lo que estaba escrito en los campos no se toca.
+        // Al volver a la pestaña se relee la grilla.
         public void ActualizarDatos()
         {
             RefrescarGrilla();
         }
 
-        // Vuelve a cargar la grilla con la lista actual que devuelve el Controller.
         private void RefrescarGrilla()
         {
             dataGridViewServiciosAdicionales.DataSource =
                 new BindingList<ServicioAdicional>(_controller.GetServiciosAdicionales());
         }
 
-        // Vacía los campos del formulario.
         private void LimpiarCampos()
         {
             textBoxNombreServicio.Clear();

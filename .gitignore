@@ -19,3 +19,8 @@ Thumbs.db
 
 # PDFs generados al probar la aplicación
 *.pdf
+
+# Base de datos SQLite local (se crea al iniciar el programa)
+*.db
+*.db-shm
+*.db-wal

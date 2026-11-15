@@ -5,8 +5,7 @@ using System.Windows.Forms;
 
 namespace Luciano_Integrador_Evaluativo_Final.View
 {
-    // Aspecto corporativo común de todas las pantallas. Los colores se definen en un solo lugar para
-    // que cambiar el estilo de la aplicación no requiera tocar cada formulario.
+    // Estilo común de todas las pantallas; los colores se definen solo acá.
     internal static class Estilo
     {
         public static readonly Color ColorFondo = Color.FromArgb(243, 245, 248);
@@ -20,35 +19,29 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         public static readonly Color ColorPeligro = Color.FromArgb(176, 42, 48);
         public static readonly Color ColorBorde = Color.FromArgb(203, 211, 222);
 
-        // Colores de la barra de pestañas de la ventana principal (oscura, a diferencia de las pantallas).
+        // Barra de pestañas (oscura).
         public static readonly Color ColorBarra = Color.FromArgb(21, 24, 29);
         public static readonly Color ColorBarraHover = Color.FromArgb(35, 40, 49);
         public static readonly Color ColorTextoBarra = Color.FromArgb(154, 163, 174);
         public static readonly Color ColorTextoBarraActivo = Color.FromArgb(227, 230, 234);
 
-        // Altura del encabezado que se agrega a cada pantalla.
         private const int AlturaEncabezado = 56;
 
-        // Alto aproximado que ocupan la barra de título de Windows y la barra de pestañas de la ventana
-        // principal. Se usa para que una pantalla incrustada en ella no quede más alta que el espacio libre.
+        // Alto de la barra de título y de pestañas, para que la pantalla incrustada entre en el espacio libre.
         private const int AlturaVentanaPrincipal = 120;
 
-        // Cuánto se agranda cada pantalla (1.2 = 20% más grande).
+        // 1.2 = 20% más grande.
         private const float EscalaDeseada = 1.2f;
 
-        // Escala realmente aplicada a la pantalla que se está armando. Puede ser menor que la deseada
-        // si la pantalla agrandada no entraría en el área visible del monitor.
+        // Escala aplicada: menor que la deseada si la pantalla no entra en el monitor.
         private static float _escala = 1f;
 
-        // Aplica el estilo al formulario y a todos sus controles, con un encabezado con su título.
         public static void Aplicar(Form formulario)
         {
             Aplicar(formulario, true);
         }
 
-        // Si conEncabezado es true la pantalla se muestra como ventana propia y lleva su encabezado con el
-        // título. Si es false está pensada para mostrarse dentro de la ventana principal (en una pestaña),
-        // que ya indica en qué pantalla se está, así que no lleva encabezado.
+        // conEncabezado = ventana propia con título; si no, va dentro de una pestaña.
         public static void Aplicar(Form formulario, bool conEncabezado)
         {
             formulario.BackColor = ColorFondo;
@@ -57,8 +50,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             formulario.FormBorderStyle = FormBorderStyle.FixedSingle;
             formulario.MaximizeBox = false;
 
-            // Primero se agranda la pantalla: así los estilos que se aplican después (por ejemplo los
-            // de las grillas) parten de las fuentes y medidas ya agrandadas.
+            // Primero se agranda, así los estilos parten de las medidas finales.
             Agrandar(formulario, conEncabezado);
 
             AplicarAControles(formulario);
@@ -71,11 +63,8 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             EstirarGrillas(formulario);
         }
 
-        // Estira cada grilla hasta el borde inferior de la ventana, dejando el mismo margen que arriba,
-        // para aprovechar el espacio. Si hay controles debajo de la grilla (por ejemplo los botones de
-        // acciones de Presupuestos) la grilla no se estira ahora, pero esos controles quedan anclados
-        // abajo. En los dos casos la grilla queda anclada a los cuatro bordes: cuando la pantalla se
-        // muestra dentro de la ventana principal (y cambia de tamaño), la grilla crece con ella.
+        // Ancla las grillas a los cuatro bordes para que crezcan con la ventana.
+        // Si hay controles debajo, esos quedan anclados abajo; si no, la grilla se estira hasta el borde.
         private static void EstirarGrillas(Form formulario)
         {
             foreach (Control control in formulario.Controls)
@@ -103,14 +92,13 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Agranda el formulario y todos sus controles (posiciones, tamaños y fuentes).
+        // Agranda posiciones, tamaños y fuentes.
         private static void Agrandar(Form formulario, bool conEncabezado)
         {
-            // Se desactiva el autoescalado por fuente para que el cambio de fuente no escale dos veces.
+            // Evita escalar dos veces por el cambio de fuente.
             formulario.AutoScaleMode = AutoScaleMode.None;
 
-            // Si la pantalla agrandada no entra en el área visible del monitor, se reduce la escala
-            // (sin bajar de 1) para que no quede cortada. Se cuenta también el alto del encabezado.
+            // Reduce la escala (mínimo 1) si no entra en el monitor.
             Rectangle area = SystemInformation.WorkingArea;
             float extra;
             if (conEncabezado)
@@ -142,8 +130,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             formulario.Scale(new SizeF(_escala, _escala));
         }
 
-        // Agranda la fuente de cada control. Se hace de adentro hacia afuera: los controles hijos
-        // toman su fuente actual antes de que cambie la de su contenedor.
+        // De adentro hacia afuera: los hijos toman su fuente antes de que cambie la del contenedor.
         private static void AgrandarFuentes(Control control)
         {
             foreach (Control hijo in control.Controls)
@@ -154,8 +141,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             control.Font = new Font(control.Font.FontFamily, control.Font.Size * _escala, control.Font.Style);
         }
 
-        // Agrega una franja superior con el título de la pantalla. Como los controles tienen posición
-        // fija, se bajan todos la altura del encabezado y se agranda la ventana en la misma medida.
+        // Franja con el título; baja los controles y agranda la ventana en la misma medida.
         private static void AgregarEncabezado(Form formulario)
         {
             int alto = (int)(AlturaEncabezado * _escala * formulario.DeviceDpi / 96.0);
@@ -181,7 +167,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             titulo.ForeColor = Color.White;
             titulo.Location = new Point((int)(20 * _escala), (int)((alto - 30 * _escala) / 2));
 
-            // Línea de acento en el borde inferior del encabezado.
+            // Línea de acento inferior.
             Panel linea = new Panel();
             linea.Dock = DockStyle.Bottom;
             linea.Height = 3;
@@ -192,7 +178,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             formulario.Controls.Add(encabezado);
         }
 
-        // Recorre los controles del formulario, incluidos los que están dentro de otros.
+        // Incluye los controles anidados.
         private static void AplicarAControles(Control contenedor)
         {
             foreach (Control control in contenedor.Controls)
@@ -211,7 +197,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
                 }
                 else if (control is Label)
                 {
-                    // Solo se cambia el color por defecto; los títulos con color propio se respetan.
+                    // Respeta los títulos con color propio.
                     if (control.ForeColor == SystemColors.ControlText)
                     {
                         control.ForeColor = ColorTexto;
@@ -222,8 +208,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Los botones con Tag = "secundario" son de acciones menos importantes: fondo blanco y borde.
-        // Los de Tag = "peligro" son acciones destructivas. El resto son botones principales: fondo azul.
+        // Tag "secundario": fondo blanco con borde. Tag "peligro": igual pero en rojo. Resto: botón principal azul.
         private static void EstiloBoton(Button boton)
         {
             boton.FlatStyle = FlatStyle.Flat;
@@ -240,7 +225,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
             else if (boton.Tag != null && boton.Tag.ToString() == "peligro")
             {
-                // Acciones destructivas (eliminar): mismo estilo que el secundario pero en rojo.
                 boton.BackColor = Color.White;
                 boton.ForeColor = ColorPeligro;
                 boton.FlatAppearance.BorderSize = 1;
@@ -250,7 +234,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             else
             {
                 boton.BackColor = ColorAcento;
-                // Los botones principales también llevan contorno (en un azul más oscuro que el relleno).
                 boton.ForeColor = Color.White;
                 boton.FlatAppearance.BorderSize = 1;
                 boton.FlatAppearance.BorderColor = ColorPrimario;
@@ -258,8 +241,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Da el aspecto corporativo a una grilla: encabezado oscuro, filas alternadas, selección suave,
-        // sin columna lateral y con las columnas repartidas a lo ancho.
+        // Encabezado oscuro, filas alternadas, selección suave y columnas a lo ancho.
         private static void EstiloGrilla(DataGridView grilla)
         {
             grilla.BackgroundColor = Color.White;
@@ -275,7 +257,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             grilla.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             grilla.RowTemplate.Height = (int)(28 * _escala);
 
-            // Sin esto Windows ignora los colores del encabezado y usa los del sistema.
+            // Sin esto Windows usa los colores del sistema en el encabezado.
             grilla.EnableHeadersVisualStyles = false;
             grilla.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             grilla.ColumnHeadersDefaultCellStyle.BackColor = ColorPrimario;
@@ -285,18 +267,15 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             grilla.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             grilla.ColumnHeadersHeight = (int)(36 * _escala);
 
-            // Selección suave (celeste con texto oscuro): más sobria que un azul fuerte.
             grilla.DefaultCellStyle.SelectionBackColor = ColorSeleccion;
             grilla.DefaultCellStyle.SelectionForeColor = ColorTexto;
             grilla.AlternatingRowsDefaultCellStyle.BackColor = ColorFilaAlterna;
 
-            // Las columnas automáticas recién existen cuando la grilla termina de enlazar los datos,
-            // por eso los formatos se aplican en este evento y no justo después de asignar DataSource.
+            // Las columnas automáticas existen recién al terminar el enlace de datos.
             grilla.DataBindingComplete += grilla_DataBindingComplete;
         }
 
-        // Las columnas decimales (precios y montos) se muestran como moneda y las columnas que son
-        // listas (por ejemplo los platillos de un menú) se ocultan, porque no se leen bien en una celda.
+        // Decimales como moneda; columnas de listas, ocultas.
         private static void grilla_DataBindingComplete(object? sender, DataGridViewBindingCompleteEventArgs e)
         {
             DataGridView grilla = (DataGridView)sender;
@@ -315,7 +294,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Muestra una columna numérica como moneda (por ejemplo $ 1.500,00).
+        // Ej: $ 1.500,00
         public static void FormatoMoneda(DataGridView grilla, string nombreColumna)
         {
             if (grilla.Columns[nombreColumna] != null)
@@ -325,8 +304,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Estilo de la ventana principal: barra superior oscura con el título de la aplicación y las
-        // pestañas (botones planos), y el panel de contenido con el fondo claro de las pantallas.
+        // Ventana principal: barra oscura con título y pestañas, y panel de contenido claro.
         public static void EstilarBarra(Panel barra, Label titulo, Panel contenido)
         {
             barra.BackColor = ColorBarra;
@@ -347,7 +325,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             UsarBarraDeTituloOscura(barra.FindForm());
         }
 
-        // Una pestaña es un botón plano, sin borde, con texto gris que se aclara al pasar el mouse.
+        // Pestaña: botón plano sin borde.
         private static void EstilarPestana(Button pestana)
         {
             pestana.FlatStyle = FlatStyle.Flat;
@@ -360,11 +338,11 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             pestana.Font = new Font("Segoe UI", 10.5F);
             pestana.Cursor = Cursors.Hand;
 
-            // Las pestañas no reciben el foco con Tab: así no se dibuja el recuadro de foco sobre ellas.
+            // Sin TabStop, para que no se dibuje el recuadro de foco.
             pestana.TabStop = false;
         }
 
-        // Marca una pestaña como la abierta (texto claro y fondo resaltado) o la deja como una pestaña común.
+        // Pestaña activa: texto claro y fondo resaltado.
         public static void MarcarPestana(Button pestana, bool activa)
         {
             if (activa)
@@ -379,8 +357,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Pide a Windows (10 20H1 en adelante) la barra de título oscura, para que combine con la barra
-        // de pestañas. En versiones anteriores no hace nada.
+        // Barra de título oscura (Windows 10 20H1+; en versiones anteriores no hace nada).
         private static void UsarBarraDeTituloOscura(Form? formulario)
         {
             if (formulario == null)

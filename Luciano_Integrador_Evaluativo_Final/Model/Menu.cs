@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 namespace Luciano_Integrador_Evaluativo_Final.Model
 {
-    // Menú: conjunto de platillos con un monto que es la suma de sus precios.
-    // Puede indicar para qué tipos de comensales es apto (veganos, vegetarianos, celíacos).
+    // Conjunto de platillos; su monto es la suma de sus precios. Puede ser apto para ciertos comensales.
     internal class Menu
     {
         private int _id;
@@ -13,15 +12,20 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         private List<Platillo> _platillos;
         private List<Aptitud> _aptitud;
 
-        // Constructor sin id: se usa al crear un menú nuevo; arranca sin platillos ni aptitudes.
-        // El Repository le asigna el id al guardarlo.
+        // Para Entity Framework.
+        private Menu()
+        {
+            _nombre = "";
+            _platillos = new List<Platillo>();
+            _aptitud = new List<Aptitud>();
+        }
+        // Menú nuevo, sin platillos ni aptitudes: la base le asigna el id.
         public Menu(string nombre)
         {
             Nombre = nombre;
             _platillos = new List<Platillo>();
             _aptitud = new List<Aptitud>();
         }
-        // Constructor con id: se usa al copiar un menú ya existente.
         public Menu(int id, string nombre)
         {
             Id = id;
@@ -29,8 +33,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             _platillos = new List<Platillo>();
             _aptitud = new List<Aptitud>();
         }
-        // Propiedades: dan acceso de lectura y escritura a los campos privados.
-        // Platillos y Aptitudes solo tienen get: la lista se modifica con los métodos Agregar/Eliminar.
+        // Platillos y Aptitudes se modifican con los métodos Agregar/Eliminar.
         public int Id
         {
             get { return _id; }
@@ -55,31 +58,27 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             get { return _aptitud; }
         }
 
-        // Agrega un platillo al menú y recalcula el monto del menú.
         public void AgregarPlatillo(Platillo platillo)
         {
             _platillos.Add(platillo);
             CalcularMonto();
         }
-        // Quita un platillo del menú y recalcula el monto del menú.
         public void EliminarPlatillo(Platillo platillo)
         {
             _platillos.Remove(platillo);
             CalcularMonto();
         }
-        // Marca el menú como apto para un tipo de comensal. Si ya la tenía, no la repite.
+        // No repite aptitudes.
         public void AgregarAptitud(Aptitud aptitud)
         {
             if (!_aptitud.Contains(aptitud))
                 _aptitud.Add(aptitud);
         }
-        // Quita una aptitud del menú.
         public void EliminarAptitud(Aptitud aptitud)
         {
             _aptitud.Remove(aptitud);
         }
-        // Suma el precio de todos los platillos, guarda el resultado en MontoTotal y lo devuelve.
-        // Es el costo del menú por invitado.
+        // Costo por invitado: suma de los platillos.
         public decimal CalcularMonto()
         {
             decimal total = 0;
@@ -91,9 +90,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             return MontoTotal;
         }
 
-        // Devuelve una copia independiente (con el mismo id), incluidos copias de sus platillos y
-        // sus aptitudes. Los presupuestos guardan copias para conservar los datos tal como estaban
-        // cuando se generaron.
+        // Copia con el mismo id, incluidos sus platillos y aptitudes.
         public Menu Copiar()
         {
             Menu copia = new Menu(Id, Nombre);
@@ -108,7 +105,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             return copia;
         }
 
-        // Texto con el que se muestra el objeto en combos y grillas: su nombre.
+        // Se muestra por su nombre en combos y grillas.
         public override string ToString()
         {
             return Nombre;

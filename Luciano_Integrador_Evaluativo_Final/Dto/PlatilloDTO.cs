@@ -4,15 +4,13 @@ using System.Collections.Generic;
 
 namespace Luciano_Integrador_Evaluativo_Final.Dto
 {
-    // DTO (objeto de transferencia de datos): lleva solo los datos que carga el usuario, sin id ni lógica.
-    // Viaja de la View al Controller y al Service, que lo valida y lo convierte en un Platillo.
+    // Datos del formulario (sin id ni lógica). El Service los valida.
     internal class PlatilloDTO
     {
         private string _nombre;
         private decimal _precio;
         private TipoPlatillo _tipo;
 
-        // Arma el DTO con los datos del formulario.
         public PlatilloDTO(string nombre, decimal precio, TipoPlatillo tipo)
         {
             Nombre = nombre;
@@ -20,7 +18,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Dto
             Tipo = tipo;
         }
 
-        // Propiedades: dan acceso a los campos privados.
         public string Nombre
         {
             get { return _nombre; }

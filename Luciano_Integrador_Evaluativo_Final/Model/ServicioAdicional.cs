@@ -3,29 +3,31 @@ using System.Collections.Generic;
 
 namespace Luciano_Integrador_Evaluativo_Final.Model
 {
-    // Servicio extra que se puede sumar a un presupuesto: tiene una descripción (nombre) y un monto fijo,
-    // que no depende del lugar, del menú ni de la cantidad de invitados.
+    // Servicio extra con precio fijo.
     internal class ServicioAdicional : IItemPresupuesto
     {
         private int _id;
         private string _nombre;
         private decimal _precio;
 
-        // Constructor completo, con id: se usa al copiar un servicio ya existente.
+        // Para Entity Framework.
+        private ServicioAdicional()
+        {
+            _nombre = "";
+        }
         public ServicioAdicional(int id, string nom, decimal precio)
         {
             Id = id;
             Nombre = nom;
             Precio = precio;
         }
-        // Constructor sin id: se usa al crear un servicio nuevo; el Repository le asigna el id al guardarlo.
+        // Servicio nuevo: la base le asigna el id.
         public ServicioAdicional(string nom, decimal precio)
         {
             Nombre = nom;
             Precio = precio;
 
         }
-        // Propiedades: dan acceso de lectura y escritura a los campos privados.
         public int Id
         {
             get { return _id; }
@@ -42,34 +44,30 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             set { _precio = value; }
         }
 
-        // Devuelve una copia independiente (con el mismo id). Los presupuestos guardan copias para
-        // conservar los datos tal como estaban cuando se generaron.
+        // Copia con el mismo id.
         public ServicioAdicional Copiar()
         {
             return new ServicioAdicional(Id, Nombre, Precio);
         }
 
-        // Texto con el que se muestra el objeto en combos y grillas: su nombre.
+        // Se muestra por su nombre en combos y grillas.
         public override string ToString()
         {
             return Nombre;
         }
 
-        // --- Implementación de IItemPresupuesto: el servicio adicional es un ítem más del presupuesto ---
+        // IItemPresupuesto
 
-        // Cómo se detalla el servicio en el presupuesto: su nombre.
         public string Descripcion
         {
             get { return Nombre; }
         }
 
-        // El servicio suma su monto fijo.
         public decimal CalcularMonto()
         {
             return Precio;
         }
 
-        // Copia del servicio, como ítem del presupuesto.
         public IItemPresupuesto CopiarItem()
         {
             return Copiar();

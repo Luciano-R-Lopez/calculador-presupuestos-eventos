@@ -8,9 +8,8 @@ using System.Windows.Forms;
 
 namespace Luciano_Integrador_Evaluativo_Final.View
 {
-    // Pantalla principal de presupuestos: se arma un presupuesto (fecha, horas, cliente, lugar, servicios y menús),
-    // con el monto calculándose al instante, y debajo la grilla para cambiar el estado, clonar, editar, eliminar
-    // y generar el PDF. No calcula nada: arma un DTO y le pide los resultados al Controller.
+    // Pantalla de presupuestos: formulario con el monto al instante y grilla con las acciones.
+    // No calcula nada: arma un DTO y se lo pasa al Controller.
     public partial class PresupuestoForm : Form, IPantallaActualizable
     {
         private PresupuestoController _controller;
@@ -19,39 +18,36 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private ServicioAdicionalController _servicioController;
         private MenuController _menuController;
 
-        // Ítems de menú cargados en el formulario, antes de registrar el presupuesto.
+        // Ítems cargados antes de registrar.
         private List<ItemMenuDTO> _items;
 
-        // Texto de la última opción de cada combo, que abre la pestaña de alta.
+        // Última opción de cada combo: abre el alta.
         private const string TextoAgregar = "+ Agregar nuevo...";
 
-        // Evita que se abra una pestaña de alta mientras se recargan los combos.
+        // Evita abrir el alta mientras se recargan los combos.
         private bool _cargando;
 
-        // Último índice elegido en cada combo, para volver a él si no se agrega nada.
+        // Último índice elegido, para volver a él si no se agrega nada.
         private int _indiceCliente;
         private int _indiceLugar;
         private int _indiceMenu;
 
-        // Ids de los servicios tildados. Se guardan aparte porque, al buscar, la lista solo muestra
-        // los servicios que coinciden y los tildados que quedan ocultos no se deben perder.
+        // Ids tildados aparte: el buscador oculta servicios y no se deben perder sus tildes.
         private List<int> _idsServiciosTildados;
 
-        // Evita registrar cambios de tilde mientras se vuelve a armar la lista de servicios.
+        // Evita registrar tildes mientras se rearma la lista.
         private bool _filtrando;
 
-        // Id del presupuesto que se está editando. En 0 el formulario está en modo "registrar".
+        // Id en edición; 0 = modo registrar.
         private int _idEditando;
 
-        // Id del presupuesto que se está viendo (campos cargados pero deshabilitados). En 0 no se ve ninguno.
+        // Id en vista (campos deshabilitados); 0 = ninguno.
         private int _idViendo;
 
-        // Evita mostrar un presupuesto mientras la grilla se recarga: en ese momento la selección
-        // cambia sola y no porque el usuario haya elegido una fila.
+        // Ignora los cambios de selección mientras se recarga la grilla.
         private bool _refrescandoGrilla;
 
-        // Borrador: lo que el usuario estaba cargando antes de ver un presupuesto. Se guarda para devolverlo
-        // al formulario al cerrar la vista, así ver un presupuesto no pisa lo que se estaba armando.
+        // Lo que se estaba cargando antes de abrir la vista; vuelve al cerrarla.
         private DateTime _borradorFecha;
         private int _borradorHoras;
         private int _borradorIdCliente;
@@ -63,19 +59,17 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private List<ItemMenuDTO> _borradorItems = new List<ItemMenuDTO>();
         private List<string> _borradorTextosItems = new List<string>();
 
-        // Arma la pantalla: aplica el estilo, crea los Controllers, carga los combos, la lista de servicios, la grilla y el monto.
         public PresupuestoForm() : this(false)
         {
         }
 
-        // Si embebido es true la pantalla se muestra dentro de la ventana principal (en una pestaña), sin encabezado
-        // propio. Si es false se muestra como ventana aparte (por ejemplo desde "+ Agregar nuevo...").
+        // embebido = dentro de una pestaña (sin encabezado); si no, ventana aparte.
         public PresupuestoForm(bool embebido)
         {
             InitializeComponent();
             Estilo.Aplicar(this, !embebido);
 
-            // La hora de inicio arranca en las 20:00 (un horario habitual para un evento); se puede cambiar.
+            // Hora por defecto: 20:00.
             dateTimePickerHora.Value = DateTime.Today.AddHours(20);
             _controller = new PresupuestoController();
             _clienteController = new ClienteController();
@@ -91,7 +85,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             FiltrarServicios();
             comboBoxEstado.DataSource = Enum.GetValues(typeof(EstadoPresupuesto));
 
-            // El monto se destaca por ser el dato principal de la pantalla.
             labelMonto.ForeColor = Estilo.ColorAcento;
 
             ConfigurarColumnas();
@@ -100,15 +93,14 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             SalirDeEdicion();
         }
 
-        // Al volver a la pestaña de Presupuestos se releen clientes, lugares, servicios, menús y la grilla,
-        // porque pudieron cambiar en otra pestaña. Lo que el usuario ya había elegido o escrito se conserva.
+        // Al volver a la pestaña relee combos, servicios y grilla, sin perder lo elegido.
         public void ActualizarDatos()
         {
             SeleccionarCliente(IdClienteElegido());
             SeleccionarLugar(IdLugarElegido());
             SeleccionarMenu(IdMenuElegido());
 
-            // Si se eliminó un servicio que estaba tildado, se lo saca de los tildados.
+            // Quita los tildes de servicios que ya no existen.
             List<int> idsExistentes = new List<int>();
             foreach (ServicioAdicional servicio in _servicioController.GetServiciosAdicionales())
             {
@@ -127,7 +119,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
-        // Id del cliente, lugar o menú elegido en su combo, o 0 si no hay ninguno elegido.
+        // 0 si no hay nada elegido.
         private int IdClienteElegido()
         {
             Cliente? cliente = comboBoxCliente.SelectedItem as Cliente;
@@ -152,7 +144,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             return menu.Id;
         }
 
-        // Recarga el combo de clientes dejando elegido el cliente con ese id (si ya no existe, queda vacío).
+        // Recarga el combo con ese cliente elegido (vacío si ya no existe).
         private void SeleccionarCliente(int id)
         {
             int indice = -1;
@@ -165,7 +157,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             CargarClientes(indice);
         }
 
-        // Igual que SeleccionarCliente, para el combo de lugares.
         private void SeleccionarLugar(int id)
         {
             int indice = -1;
@@ -178,7 +169,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             CargarLugares(indice);
         }
 
-        // Igual que SeleccionarCliente, para el combo de menús.
         private void SeleccionarMenu(int id)
         {
             int indice = -1;
@@ -191,8 +181,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             CargarMenus(indice);
         }
 
-        // Carga cada combo con los datos y, al final, la opción para abrir la pestaña de alta.
-        // La lista es de object porque mezcla los objetos del modelo con el texto de la opción.
+        // Datos y, al final, la opción de alta (por eso la lista es de object).
         private void CargarClientes(int indice)
         {
             _cargando = true;
@@ -218,7 +207,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _cargando = false;
         }
 
-        // Igual que CargarClientes, para el combo de lugares.
         private void CargarLugares(int indice)
         {
             _cargando = true;
@@ -244,7 +232,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _cargando = false;
         }
 
-        // Igual que CargarClientes, para el combo de menús.
         private void CargarMenus(int indice)
         {
             _cargando = true;
@@ -270,8 +257,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _cargando = false;
         }
 
-        // Al elegir un cliente recuerda la posición y recalcula el monto. Si se elige la opción "+ Agregar nuevo...",
-        // abre la pantalla de clientes y, al volver, recarga el combo y deja elegido el cliente recién agregado.
+        // Si se elige "+ Agregar nuevo...", abre el alta y al volver selecciona el recién agregado.
         private void comboBoxCliente_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_cargando)
@@ -279,8 +265,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
             if (comboBoxCliente.SelectedItem != null && comboBoxCliente.SelectedItem.ToString() == TextoAgregar)
             {
-                // Se compara la cantidad antes y después de cerrar la pestaña:
-                // si aumentó se agregó uno nuevo (queda al final) y se selecciona.
+                // Si aumentó la cantidad, el nuevo está al final.
                 int cantidad = _clienteController.GetClientes().Count;
                 ClienteForm form = new ClienteForm();
                 form.ShowDialog();
@@ -303,7 +288,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
-        // Igual que el combo de clientes, pero con la pantalla de lugares.
         private void comboBoxLugar_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_cargando)
@@ -333,7 +317,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
-        // Igual que el combo de clientes, pero con la pantalla de menús.
         private void comboBoxMenu_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_cargando)
@@ -363,8 +346,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
-        // La grilla muestra Presupuesto, que tiene listas (menús, servicios). Con columnas automáticas
-        // aparecerían columnas inútiles de colecciones, por eso se definen a mano solo las que interesan.
+        // Columnas definidas a mano para no mostrar las listas del presupuesto.
         private void ConfigurarColumnas()
         {
             dataGridViewPresupuestos.AutoGenerateColumns = false;
@@ -381,7 +363,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             dataGridViewPresupuestos.Columns["colFechaEvento"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
             Estilo.FormatoMoneda(dataGridViewPresupuestos, "colMontoTotal");
 
-            // Id y Horas son datos cortos: se les da menos ancho que al resto.
             dataGridViewPresupuestos.Columns["colId"].FillWeight = 28;
             dataGridViewPresupuestos.Columns["colCantidadHoras"].FillWeight = 58;
             dataGridViewPresupuestos.Columns["colFechaCreacion"].FillWeight = 140;
@@ -392,7 +373,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             dataGridViewPresupuestos.Columns["colMontoTotal"].FillWeight = 122;
         }
 
-        // Agrega una columna a la grilla, enlazada a una propiedad del presupuesto y con su título.
         private void AgregarColumna(string propiedad, string titulo)
         {
             DataGridViewTextBoxColumn columna = new DataGridViewTextBoxColumn();
@@ -402,12 +382,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             dataGridViewPresupuestos.Columns.Add(columna);
         }
 
-        // Arma el DTO solo con lo que capturó el formulario. El cálculo lo hace el Controller.
+        // Solo lo cargado en el formulario; el cálculo lo hace el Controller.
         private PresupuestoDTO ArmarDTO()
         {
-            // "as" convierte el elemento elegido y devuelve null si no es de ese tipo
-            // (por ejemplo, si está seleccionada la opción "+ Agregar nuevo...").
-            // Con id 0 el Service interpreta que no hay nada elegido.
+            // "as" da null si no es de ese tipo (ej. la opción de alta). Id 0 = nada elegido.
             int idCliente = 0;
             Cliente? cliente = comboBoxCliente.SelectedItem as Cliente;
             if (cliente != null)
@@ -424,8 +402,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
             List<int> idsServicios = new List<int>(_idsServiciosTildados);
 
-            // La fecha y la hora de inicio se eligen en dos selectores: se toma el día del primero y la
-            // hora del segundo (Date + TimeOfDay) para armar el DateTime con el inicio del evento.
+            // Día del primer selector + hora del segundo.
             return new PresupuestoDTO(
                 dateTimePickerEvento.Value.Date + dateTimePickerHora.Value.TimeOfDay,
                 (int)numericUpDownHoras.Value,
@@ -436,12 +413,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             );
         }
 
-        // Muestra el monto al instante. La View no calcula nada: arma el DTO y le pide el resultado al
-        // Controller. Mientras el formulario está incompleto el Service lanza excepciones; en ese caso
-        // se muestra "-" en lugar de un mensaje de error.
+        // Monto al instante. Si el formulario está incompleto se muestra "-".
         private void RecalcularMonto()
         {
-            // Mientras se ve un presupuesto se muestra el monto con el que quedó guardado, no se recalcula.
+            // En la vista se muestra el monto guardado.
             if (_idViendo != 0)
                 return;
 
@@ -456,24 +431,30 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Se asigna null primero y luego una lista nueva para forzar a la grilla a releer los datos.
+        // null primero para forzar la relectura.
         private void RefrescarGrilla()
         {
             _refrescandoGrilla = true;
 
-            // Se enlaza una copia de la lista: si se enlazara la del repositorio, al eliminar un presupuesto
-            // la lista cambiaría "por debajo" de la grilla y esta pediría filas que ya no existen.
+            // Copia de la lista: si la del repositorio cambiara por debajo, la grilla pediría filas inexistentes.
             dataGridViewPresupuestos.DataSource = null;
             dataGridViewPresupuestos.DataSource = new BindingList<Presupuesto>(new List<Presupuesto>(_controller.GetPresupuestos()));
 
-            // Al recargar, la grilla elige sola la primera fila. Se deja marcada la fila del presupuesto que se
-            // está viendo (si hay uno) o ninguna, para que solo se muestre lo que el usuario elige.
+            // Deja marcada la fila en vista, o ninguna (la grilla elige sola la primera).
             MarcarFila(_idViendo);
 
             _refrescandoGrilla = false;
         }
 
-        // Deja seleccionada la fila del presupuesto con ese id, o ninguna si no está en la grilla.
+        // Al aparecer, la grilla elige sola la primera fila: luego (BeginInvoke) se corrige.
+        private void dataGridViewPresupuestos_VisibleChanged(object? sender, EventArgs e)
+        {
+            if (dataGridViewPresupuestos.Visible && dataGridViewPresupuestos.IsHandleCreated)
+            {
+                BeginInvoke(new Action(() => MarcarFila(_idViendo)));
+            }
+        }
+
         private void MarcarFila(int id)
         {
             bool anterior = _refrescandoGrilla;
@@ -493,8 +474,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _refrescandoGrilla = anterior;
         }
 
-        // Botón Agregar ítem: agrega a la lista el menú elegido con su cantidad de invitados (adultos o niños)
-        // y recalcula el monto.
         private void btnAgregarItem_Click(object sender, EventArgs e)
         {
             Menu? menu = comboBoxMenu.SelectedItem as Menu;
@@ -509,7 +488,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
-        // Texto con el que se muestra cada ítem de menú en la lista, por ejemplo "Menú Clásico x50 (adultos)".
+        // Ej: "Menú Clásico x50 (adultos)".
         private string TextoItem(string nombreMenu, int cantidad, bool paraAdulto)
         {
             string destino = "niños";
@@ -521,7 +500,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             return nombreMenu + " x" + cantidad + " (" + destino + ")";
         }
 
-        // Botón Quitar ítem: saca de la lista el ítem seleccionado y recalcula el monto.
         private void btnQuitarItem_Click(object sender, EventArgs e)
         {
             int indice = listBoxItems.SelectedIndex;
@@ -533,13 +511,11 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
-        // Botón Registrar/Guardar cambios: envía el DTO al Controller. En modo edición actualiza el presupuesto;
-        // si no, registra uno nuevo. Luego refresca la grilla y limpia el formulario.
+        // Registra o guarda cambios según el modo; luego limpia el formulario.
         private void btnRegistrar_Click(object sender, EventArgs e)
         {
             try
             {
-                // El mismo botón registra o guarda cambios según el modo en que esté el formulario.
                 if (_idEditando == 0)
                 {
                     _controller.RegistrarPresupuesto(ArmarDTO());
@@ -559,7 +535,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Carga en el formulario el presupuesto seleccionado en la grilla y pasa a modo edición.
+        // Carga el seleccionado y pasa a modo edición.
         private void btnEditar_Click(object sender, EventArgs e)
         {
             Presupuesto? seleccionado = ObtenerSeleccionado();
@@ -570,7 +546,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
                 return;
             }
 
-            // Si el presupuesto no se puede editar (pagado o evento ya pasado), se avisa el motivo.
+            // Avisa si está pagado o el evento ya pasó.
             try
             {
                 _controller.ValidarEdicion(seleccionado.Id);
@@ -581,7 +557,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
                 return;
             }
 
-            // Si se estaba viendo un presupuesto, se sale de la vista: al editar, los campos se habilitan.
+            // Al editar se sale de la vista.
             if (_idViendo != 0)
             {
                 _idViendo = 0;
@@ -596,15 +572,13 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
-        // Pasa al formulario los datos de un presupuesto: fecha, horas, cliente, lugar, servicios e ítems.
-        // Lo usan Editar (para modificarlo) y Ver (para mirarlo con los campos deshabilitados).
+        // Lo usan Editar y la vista.
         private void CargarEnFormulario(Presupuesto seleccionado)
         {
             dateTimePickerEvento.Value = seleccionado.FechaEvento;
             dateTimePickerHora.Value = seleccionado.FechaEvento;
             numericUpDownHoras.Value = seleccionado.CantidadHoras;
 
-            // Se vuelve a cargar cada combo dejando elegidos el cliente y el lugar del presupuesto.
             int idCliente = 0;
             if (seleccionado.Cliente != null)
                 idCliente = seleccionado.Cliente.Id;
@@ -615,16 +589,15 @@ namespace Luciano_Integrador_Evaluativo_Final.View
                 idLugar = seleccionado.Lugar.Id;
             SeleccionarLugar(idLugar);
 
-            // Se tildan los servicios del presupuesto (la búsqueda se limpia para que se vean todos).
+            // Se limpia la búsqueda para que se vean todos.
             _idsServiciosTildados.Clear();
-            foreach (ServicioAdicional servicio in seleccionado.ServiciosAdicionales)
+            foreach (ServicioPresupuestado renglon in seleccionado.ServiciosAdicionales)
             {
-                _idsServiciosTildados.Add(servicio.Id);
+                _idsServiciosTildados.Add(renglon.Servicio.Id);
             }
             textBoxBuscarServicio.Clear();
             FiltrarServicios();
 
-            // Se cargan los ítems de menú del presupuesto.
             _items.Clear();
             listBoxItems.Items.Clear();
             foreach (ItemMenu item in seleccionado.Menus)
@@ -634,17 +607,18 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Al elegir una fila de la grilla (con un clic o moviéndose con las flechas) se muestra ese presupuesto
-        // en el formulario, con los campos deshabilitados para que no se pueda modificar nada. Así se pueden
-        // recorrer varios presupuestos rápidamente. Lo que el usuario estaba cargando se guarda y vuelve al
-        // presionar "Cerrar vista".
+        // Al elegir una fila (clic o flechas) se muestra ese presupuesto con los campos
+        // deshabilitados. Lo que se estaba cargando vuelve con "Cerrar vista".
         private void dataGridViewPresupuestos_SelectionChanged(object? sender, EventArgs e)
         {
-            // Mientras la grilla se recarga, el cambio de selección no lo hizo el usuario: se ignora.
             if (_refrescandoGrilla)
                 return;
 
-            // Mientras se edita, elegir otra fila no cambia el formulario (se perderían los cambios).
+            // Solo si la grilla tiene el foco: así no cuenta la selección automática al aparecer.
+            if (!dataGridViewPresupuestos.Focused)
+                return;
+
+            // Mientras se edita, no cambia el formulario.
             if (_idEditando != 0)
                 return;
 
@@ -657,8 +631,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
         private void VerPresupuesto(Presupuesto seleccionado)
         {
-            // El borrador se guarda solo al entrar a la vista; si se pasa de un presupuesto a otro
-            // sin cerrarla, se conserva el borrador original.
+            // El borrador se guarda solo al entrar a la vista.
             if (_idViendo == 0)
             {
                 GuardarBorrador();
@@ -671,7 +644,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             btnCerrarVista.Text = "Cerrar vista del presupuesto N° " + seleccionado.Id;
         }
 
-        // Botón Cerrar vista: vuelve a habilitar los campos y devuelve lo que el usuario estaba cargando.
         private void btnCerrarVista_Click(object sender, EventArgs e)
         {
             CerrarVista();
@@ -683,12 +655,11 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             HabilitarCampos(true);
             RestaurarBorrador();
 
-            // Se quita la selección de la grilla: así, al volver a hacer clic en la misma fila, se vuelve a ver.
+            // Sin selección, para poder volver a ver la misma fila.
             MarcarFila(0);
         }
 
-        // Habilita o deshabilita todos los campos de carga. Deshabilitados se usan para ver un presupuesto:
-        // se leen los datos pero no se pueden cambiar. Registrar se oculta y aparece Cerrar vista en su lugar.
+        // Deshabilitados = vista: Registrar se oculta y aparece Cerrar vista.
         private void HabilitarCampos(bool habilitado)
         {
             dateTimePickerEvento.Enabled = habilitado;
@@ -703,7 +674,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             checkBoxAdulto.Enabled = habilitado;
             listBoxItems.Enabled = habilitado;
 
-            // Los botones planos no se ven grises al deshabilitarlos, por eso en la vista se ocultan.
+            // Los botones planos no se ven grises: se ocultan.
             btnAgregarItem.Visible = habilitado;
             btnQuitarItem.Visible = habilitado;
 
@@ -711,7 +682,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             btnCerrarVista.Visible = !habilitado;
         }
 
-        // Guarda una copia de lo que hay cargado en el formulario.
         private void GuardarBorrador()
         {
             _borradorFecha = dateTimePickerEvento.Value.Date + dateTimePickerHora.Value.TimeOfDay;
@@ -731,7 +701,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Devuelve al formulario lo guardado en el borrador y recalcula el monto.
         private void RestaurarBorrador()
         {
             dateTimePickerEvento.Value = _borradorFecha;
@@ -757,8 +726,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             RecalcularMonto();
         }
 
-        // Elimina el presupuesto seleccionado en la grilla, previa confirmación. Si está pagado, el
-        // Service lo rechaza con un mensaje y no se borra.
+        // Pide confirmación; el Service lo rechaza si está pagado.
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             Presupuesto? seleccionado = ObtenerSeleccionado();
@@ -778,13 +746,11 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             {
                 _controller.EliminarPresupuesto(seleccionado.Id);
 
-                // Si se eliminó justo el que se estaba viendo, se cierra la vista.
                 if (_idViendo == seleccionado.Id)
                 {
                     CerrarVista();
                 }
 
-                // Si se eliminó justo el que se estaba editando, se sale del modo edición.
                 if (_idEditando == seleccionado.Id)
                 {
                     LimpiarCampos();
@@ -799,14 +765,12 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Botón Cancelar edición: descarta lo cargado y vuelve al modo registrar.
         private void btnCancelarEdicion_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
             SalirDeEdicion();
         }
 
-        // Vuelve al modo registrar: sin presupuesto en edición, botón con su texto original y sin botón Cancelar.
         private void SalirDeEdicion()
         {
             _idEditando = 0;
@@ -814,11 +778,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             btnCancelarEdicion.Visible = false;
         }
 
-        // Devuelve el presupuesto de la fila seleccionada, o null si no hay ninguna.
+        // null si no hay ninguna.
         private Presupuesto? ObtenerSeleccionado()
         {
-            // Se usa la fila seleccionada y no la "fila actual" (CurrentRow): al cambiar de fila, el evento
-            // SelectionChanged llega antes de que se actualice CurrentRow.
+            // SelectedRows y no CurrentRow: SelectionChanged llega antes de que se actualice CurrentRow.
             if (dataGridViewPresupuestos.SelectedRows.Count == 0)
             {
                 return null;
@@ -826,8 +789,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             return dataGridViewPresupuestos.SelectedRows[0].DataBoundItem as Presupuesto;
         }
 
-        // Botón Cambiar estado: pasa el presupuesto seleccionado al estado elegido en el combo.
-        // Si el cambio no está permitido, el Controller lanza un error que se muestra en un cuadro.
+        // El Controller rechaza los cambios de estado no permitidos.
         private void btnCambiarEstado_Click(object sender, EventArgs e)
         {
             Presupuesto? seleccionado = ObtenerSeleccionado();
@@ -840,7 +802,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
             try
             {
-                // El combo se llenó con los valores del enum, por eso se convierte con un cast.
                 _controller.CambiarEstado(seleccionado.Id, (EstadoPresupuesto)comboBoxEstado.SelectedItem);
                 RefrescarGrilla();
             }
@@ -850,7 +811,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Botón Clonar: crea un presupuesto nuevo igual al seleccionado.
         private void btnClonar_Click(object sender, EventArgs e)
         {
             Presupuesto? seleccionado = ObtenerSeleccionado();
@@ -872,7 +832,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Botón Generar PDF: pide dónde guardar el archivo y le pide al Controller generar el PDF del presupuesto seleccionado.
         private void btnGenerarPdf_Click(object sender, EventArgs e)
         {
             Presupuesto? seleccionado = ObtenerSeleccionado();
@@ -901,8 +860,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Vuelve a armar la lista mostrando solo los servicios cuyo nombre contiene el texto buscado.
-        // Cada servicio aparece tildado si su id está entre los tildados.
+        // Muestra los servicios que coinciden con la búsqueda, conservando los tildados.
         private void FiltrarServicios()
         {
             _filtrando = true;
@@ -921,19 +879,16 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _filtrando = false;
         }
 
-        // Se ejecuta cada vez que se escribe en el buscador: vuelve a filtrar la lista de servicios.
         private void textBoxBuscarServicio_TextChanged(object sender, EventArgs e)
         {
             FiltrarServicios();
         }
 
-        // Se ejecuta al tildar o destildar un servicio: actualiza la lista de ids tildados y recalcula el monto.
         private void checkedListBoxServicios_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (_filtrando)
                 return;
 
-            // Se guarda o se quita el id del servicio según quede tildado o destildado.
             ServicioAdicional servicio = (ServicioAdicional)checkedListBoxServicios.Items[e.Index];
             if (e.NewValue == CheckState.Checked)
             {
@@ -947,13 +902,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
                 _idsServiciosTildados.Remove(servicio.Id);
             }
 
-            // ItemCheck se dispara ANTES de que el servicio quede tildado o destildado, así que si se
-            // recalculara acá el monto saldría con el estado viejo. BeginInvoke deja el recálculo en la
-            // cola del formulario, para cuando el evento ya terminó y el tilde ya se aplicó.
+            // ItemCheck llega antes de aplicar el tilde: BeginInvoke recalcula después.
             BeginInvoke(new Action(RecalcularMonto));
         }
 
-        // Vacía el formulario: ítems, horas, cantidad, buscador y servicios tildados, y recalcula el monto.
         private void LimpiarCampos()
         {
             _items.Clear();

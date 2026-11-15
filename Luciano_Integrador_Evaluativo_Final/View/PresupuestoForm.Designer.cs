@@ -245,6 +245,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             dataGridViewPresupuestos.Size = new Size(730, 550);
             dataGridViewPresupuestos.TabIndex = 19;
             dataGridViewPresupuestos.SelectionChanged += dataGridViewPresupuestos_SelectionChanged;
+            dataGridViewPresupuestos.VisibleChanged += dataGridViewPresupuestos_VisibleChanged;
             //
             // comboBoxEstado
             //

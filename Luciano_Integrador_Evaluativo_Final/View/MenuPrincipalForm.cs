@@ -2,19 +2,15 @@ using Luciano_Integrador_Evaluativo_Final.View;
 
 namespace Luciano_Integrador_Evaluativo_Final
 {
-    // Ventana principal: una barra de pestañas arriba (una por pantalla) y, debajo, la pantalla abierta.
-    // Cada pantalla se muestra dentro de esta misma ventana, en el panel de contenido.
+    // Ventana principal: barra de pestañas y, debajo, la pantalla abierta.
     public partial class MenuPrincipalForm : Form
     {
-        // Pantalla de cada pestaña. Se crea la primera vez que se abre la pestaña y después se reutiliza:
-        // al cambiar de pestaña solo se oculta, así los campos que el usuario ya completó no se pierden.
+        // Una pantalla por pestaña; se crea una vez y al cambiar de pestaña solo se oculta.
         private Dictionary<Button, Form> _pantallas;
 
-        // Pantalla que se está mostrando y pestaña que la abrió (para marcarla como activa).
         private Form? _pantallaActual;
         private Button? _pestanaActiva;
 
-        // Arma la ventana y le da el estilo de la barra de pestañas.
         public MenuPrincipalForm()
         {
             InitializeComponent();
@@ -22,13 +18,13 @@ namespace Luciano_Integrador_Evaluativo_Final
             _pantallas = new Dictionary<Button, Form>();
         }
 
-        // Al abrir la ventana se muestra la primera pestaña: Presupuestos.
+        // Arranca en Presupuestos.
         private void MenuPrincipalForm_Load(object sender, EventArgs e)
         {
             AbrirPestana(btnPresupuestos);
         }
 
-        // Crea la pantalla que corresponde a cada pestaña, en modo embebido (sin encabezado propio).
+        // Pantallas embebidas (sin encabezado propio).
         private Form CrearPantalla(Button pestana)
         {
             if (pestana == btnClientes)
@@ -44,9 +40,8 @@ namespace Luciano_Integrador_Evaluativo_Final
             return new PresupuestoForm(true);
         }
 
-        // Muestra la pantalla de una pestaña dentro del panel de contenido y marca la pestaña como activa.
-        // Si la pantalla todavía no existe se crea; si ya existía se vuelve a mostrar tal como quedó y se le
-        // pide que relea los datos (pudieron cambiar en otra pestaña). La pantalla anterior solo se oculta.
+        // Muestra la pantalla de la pestaña (la crea si no existe) y la marca como activa.
+        // Si ya existía, relee sus datos.
         private void AbrirPestana(Button pestana)
         {
             if (pestana == _pestanaActiva)
@@ -63,8 +58,7 @@ namespace Luciano_Integrador_Evaluativo_Final
             }
             else
             {
-                // Una pantalla común es una ventana, así que para incrustarla se le indica que no es de
-                // nivel superior, sin borde y que ocupe todo el panel.
+                // Para incrustar un Form: no de nivel superior, sin borde y ocupando todo el panel.
                 pantalla = CrearPantalla(pestana);
                 pantalla.TopLevel = false;
                 pantalla.FormBorderStyle = FormBorderStyle.None;

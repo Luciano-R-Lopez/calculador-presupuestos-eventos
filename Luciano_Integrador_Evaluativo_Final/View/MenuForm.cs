@@ -8,30 +8,26 @@ using System.Windows.Forms;
 
 namespace Luciano_Integrador_Evaluativo_Final.View
 {
-    // Pantalla de menús: formulario para armar un menú (nombre, platillos y aptitudes), editarlo o eliminarlo.
-    // Solo captura datos y muestra resultados; las reglas están en el Service.
+    // Pantalla de menús: nombre, platillos y aptitudes; alta, edición y baja.
     public partial class MenuForm : Form, IPantallaActualizable
     {
         private MenuController _controller;
         private PlatilloController _platilloController;
 
-        // Ids de los platillos tildados. Se guardan aparte porque, al buscar, la lista solo muestra
-        // los platillos que coinciden y los tildados que quedan ocultos no se deben perder.
+        // Ids tildados aparte: el buscador oculta platillos y no se deben perder sus tildes.
         private List<int> _idsPlatillosTildados;
 
-        // Evita registrar cambios de tilde mientras se vuelve a armar la lista.
+        // Evita registrar tildes mientras se rearma la lista.
         private bool _filtrando;
 
-        // Id del menú que se está editando. En 0 el formulario está en modo "agregar".
+        // Id en edición; 0 = modo agregar.
         private int _idEditando;
 
-        // Arma la pantalla: aplica el estilo, crea los Controllers, carga la lista de platillos, las aptitudes y la grilla.
         public MenuForm() : this(false)
         {
         }
 
-        // Si embebido es true la pantalla se muestra dentro de la ventana principal (en una pestaña), sin encabezado
-        // propio. Si es false se muestra como ventana aparte (por ejemplo desde "+ Agregar nuevo...").
+        // embebido = dentro de una pestaña (sin encabezado); si no, ventana aparte.
         public MenuForm(bool embebido)
         {
             InitializeComponent();
@@ -46,8 +42,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             SalirDeEdicion();
         }
 
-        // Botón Agregar/Guardar: arma el MenuDTO con el nombre, los platillos tildados y las aptitudes marcadas,
-        // lo envía al Controller y refresca la grilla. En modo edición guarda los cambios; si no, agrega un menú nuevo.
+        // Agrega o guarda cambios según el modo.
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             try
@@ -60,7 +55,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
                 MenuDTO dto = new MenuDTO(textBoxNombreMenu.Text, idsPlatillos, aptitudes);
 
-                // El mismo botón agrega o guarda cambios según el modo en que esté el formulario.
                 if (_idEditando == 0)
                 {
                     _controller.RegistrarMenu(dto);
@@ -80,7 +74,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Carga en los campos el menú seleccionado en la grilla y pasa a modo edición.
+        // Carga el seleccionado en los campos y pasa a modo edición.
         private void btnEditar_Click(object sender, EventArgs e)
         {
             Menu? menu = null;
@@ -99,7 +93,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _idEditando = menu.Id;
             textBoxNombreMenu.Text = menu.Nombre;
 
-            // Se tildan los platillos del menú (la búsqueda se limpia para que se vean todos).
+            // Se limpia la búsqueda para que se vean todos.
             _idsPlatillosTildados.Clear();
             foreach (Platillo platillo in menu.Platillos)
             {
@@ -118,8 +112,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             btnCancelar.Visible = true;
         }
 
-        // Elimina el menú seleccionado en la grilla, previa confirmación. Si está en uso, el Service
-        // lo rechaza con un mensaje y no se borra.
+        // Pide confirmación; el Service lo rechaza si está en uso.
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             Menu? seleccionado = null;
@@ -144,7 +137,6 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             {
                 _controller.EliminarMenu(seleccionado.Id);
 
-                // Si se eliminó justo el que se estaba editando, se sale del modo edición.
                 if (_idEditando == seleccionado.Id)
                 {
                     LimpiarCampos();
@@ -159,14 +151,12 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Botón Cancelar: descarta lo escrito y vuelve al modo agregar.
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
             SalirDeEdicion();
         }
 
-        // Vuelve al modo agregar: sin menú en edición, botón con el texto Agregar y sin botón Cancelar.
         private void SalirDeEdicion()
         {
             _idEditando = 0;
@@ -174,8 +164,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             btnCancelar.Visible = false;
         }
 
-        // Vuelve a armar la lista mostrando solo los platillos cuyo nombre contiene el texto buscado.
-        // Cada platillo aparece tildado si su id está entre los tildados.
+        // Muestra los platillos que coinciden con la búsqueda, conservando los tildados.
         private void FiltrarPlatillos()
         {
             _filtrando = true;
@@ -194,13 +183,11 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _filtrando = false;
         }
 
-        // Se ejecuta cada vez que se escribe en el buscador: vuelve a filtrar la lista de platillos.
         private void textBoxBuscarPlatillo_TextChanged(object sender, EventArgs e)
         {
             FiltrarPlatillos();
         }
 
-        // Guarda o quita el id del platillo según quede tildado o destildado.
         private void checkedListBoxPlatillos_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (_filtrando)
@@ -221,13 +208,12 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             }
         }
 
-        // Abre la pestaña de alta de platillos y recarga la lista conservando lo que ya estaba tildado.
+        // Abre el alta de platillos; los nuevos quedan tildados.
         private void btnNuevoPlatillo_Click(object sender, EventArgs e)
         {
             int cantidad = _platilloController.GetPlatillos().Count;
             new PlatilloForm().ShowDialog();
 
-            // Los platillos recién agregados quedan tildados.
             List<Platillo> platillos = _platilloController.GetPlatillos();
             for (int i = cantidad; i < platillos.Count; i++)
             {
@@ -237,21 +223,18 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             FiltrarPlatillos();
         }
 
-        // Al volver a la pestaña se releen los platillos (pudieron agregarse en la pestaña Platillos) y la
-        // grilla. Lo que ya estaba escrito y tildado se conserva.
+        // Al volver a la pestaña se releen platillos y grilla, sin perder lo cargado.
         public void ActualizarDatos()
         {
             FiltrarPlatillos();
             RefrescarGrilla();
         }
 
-        // Vuelve a cargar la grilla con la lista actual de menús.
         private void RefrescarGrilla()
         {
             dataGridViewMenus.DataSource = new BindingList<Menu>(_controller.GetMenus());
         }
 
-        // Vacía el nombre, el buscador, los platillos tildados y las aptitudes marcadas.
         private void LimpiarCampos()
         {
             textBoxNombreMenu.Clear();

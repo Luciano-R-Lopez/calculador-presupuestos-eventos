@@ -5,9 +5,7 @@ using System.Collections.Generic;
 
 namespace Luciano_Integrador_Evaluativo_Final.Service
 {
-    // Carga datos de ejemplo al iniciar el programa, para poder armar un presupuesto sin tener que
-    // cargar todo a mano. Pasa por los mismos Services que usa la aplicación, así los ids se asignan
-    // en el Repository y se aplican las mismas validaciones.
+    // Datos de ejemplo. Usa los mismos Services que la app (mismas validaciones).
     internal class DatosDePruebaService
     {
         private ClienteService _clienteService;
@@ -16,7 +14,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
         private PlatilloService _platilloService;
         private MenuService _menuService;
 
-        // Crea los Services que se usan para cargar los datos.
         public DatosDePruebaService()
         {
             _clienteService = new ClienteService();
@@ -26,11 +23,13 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _menuService = new MenuService();
         }
 
-        // Carga todos los datos de ejemplo, en orden (los menús necesitan que ya existan los platillos).
+        // En orden: los menús necesitan los platillos.
         public void Cargar()
         {
-            // Si ya hay datos cargados no se vuelve a cargar.
-            if (_clienteService.GetClientes().Count > 0)
+            // Solo si la base está vacía (primera vez que se abre).
+            if (_clienteService.GetClientes().Count > 0 || _lugarService.GetLugaresEvento().Count > 0
+                || _servicioService.GetServiciosAdicionales().Count > 0 || _platilloService.GetPlatillos().Count > 0
+                || _menuService.GetMenus().Count > 0)
                 return;
 
             CargarClientes();
@@ -40,36 +39,32 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             CargarMenus();
         }
 
-        // Carga 2 clientes de ejemplo.
         private void CargarClientes()
         {
             _clienteService.RegistrarCliente(new ClienteDTO("María González", "351-4567890", "maria.gonzalez@mail.com"));
             _clienteService.RegistrarCliente(new ClienteDTO("Empresa Altos del Sur S.A.", "351-4123456", "eventos@altosdelsur.com"));
         }
 
-        // Carga 2 lugares de ejemplo.
         private void CargarLugares()
         {
             _lugarService.RegistrarLugarEvento(new LugarEventoDTO("Salón Los Álamos", 450000));
             _lugarService.RegistrarLugarEvento(new LugarEventoDTO("Quinta La Estancia", 780000));
         }
 
-        // Carga 2 servicios adicionales de ejemplo.
         private void CargarServicios()
         {
             _servicioService.RegistrarServicioAdicional(new ServicioAdicionalDTO("DJ y sonido", 120000));
             _servicioService.RegistrarServicioAdicional(new ServicioAdicionalDTO("Decoración temática", 95000));
         }
 
-        // Carga 2 platillos de ejemplo.
         private void CargarPlatillos()
         {
-            // Los ids se asignan en orden: 1 = Ensalada Caprese, 2 = Milanesa con papas.
+            // Ids en orden: 1 = Ensalada Caprese, 2 = Milanesa con papas.
             _platilloService.RegistrarPlatillo(new PlatilloDTO("Ensalada Caprese", 3500, TipoPlatillo.Entrada));
             _platilloService.RegistrarPlatillo(new PlatilloDTO("Milanesa con papas", 7500, TipoPlatillo.Principal));
         }
 
-        // Carga 2 menús de ejemplo que usan los platillos anteriores (por id).
+        // Usan los platillos anteriores (por id).
         private void CargarMenus()
         {
             List<int> platillosClasico = new List<int>();
