@@ -1,0 +1,1426 @@
+<diagram program="umletino" version="15.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>40</y>
+      <w>1510</w>
+      <h>341</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;capa&gt;&gt; DTO  (datos del formulario que viajan de la View al Service; las relaciones viajan como ids)
+bg=#f9d9ea</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>50</x>
+      <y>80</y>
+      <w>365</w>
+      <h>106</h>
+    </coordinates>
+    <panel_attributes>ClienteDTO
+-
+- _nombre: string
+- _telefono: string
+- _email: string
+bg=#ffffff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>425</x>
+      <y>80</y>
+      <w>365</w>
+      <h>106</h>
+    </coordinates>
+    <panel_attributes>LugarEventoDTO
+-
+- _nombre: string
+- _precio: decimal
+bg=#ffffff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>800</x>
+      <y>80</y>
+      <w>365</w>
+      <h>106</h>
+    </coordinates>
+    <panel_attributes>ServicioAdicionalDTO
+-
+- _nombre: string
+- _precio: decimal
+bg=#ffffff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1175</x>
+      <y>80</y>
+      <w>365</w>
+      <h>106</h>
+    </coordinates>
+    <panel_attributes>PlatilloDTO
+-
+- _nombre: string
+- _precio: decimal
+- _tipo: TipoPlatillo
+bg=#ffffff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>50</x>
+      <y>196</y>
+      <w>365</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>MenuDTO
+-
+- _nombre: string
+- _idsPlatillos: List&lt;int&gt;
+- _aptitudes: List&lt;Aptitud&gt;
+bg=#ffffff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>425</x>
+      <y>196</y>
+      <w>365</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>ItemMenuDTO
+-
+- _cantidad: int
+- _idMenu: int
+- _paraAdulto: bool
+bg=#ffffff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>800</x>
+      <y>196</y>
+      <w>365</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>PresupuestoDTO
+-
+- _fechaEvento: DateTime
+- _cantidadHoras: int
+- _idCliente: int
+- _idLugar: int
+- _idsServicios: List&lt;int&gt;
+- _menus: List&lt;ItemMenuDTO&gt;
+bg=#ffffff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>40</y>
+      <w>391</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+IRepository&lt;T&gt;
+-
++ Agregar(T entidad): void
++ GetTodos(): List&lt;T&gt;
++ GetPorId(int id): T?
++ Update(T entidad): void
++ Delete(int id): void
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>250</y>
+      <w>391</w>
+      <h>196</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+EfRepository&lt;T&gt;
+-
+# _contexto: AppDbContext
+-
+# Consulta(): IQueryable&lt;T&gt;
++ Agregar / GetTodos / GetPorId
++ Update / Delete
+# Guardar(): void
+- DescartarCambios(): void
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>250</y>
+      <w>368</w>
+      <h>214</h>
+    </coordinates>
+    <panel_attributes>AppDbContext
+&lt;&lt;Singleton&gt;&gt; : DbContext
+-
+- _instancia: AppDbContext
++ Clientes, Lugares, ServiciosAdicionales,
+   Platillos, Menus, Presupuestos: DbSet
+-
+- AppDbContext()
++ GetInstance(): AppDbContext
+# OnConfiguring()  (SQLite: presupuestos.db)
+# OnModelCreating()  (tablas y relaciones)
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>524</y>
+      <w>399</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;capa&gt;&gt; View
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>499</x>
+      <y>524</y>
+      <w>561</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;capa&gt;&gt; Controller
+bg=#d9f2d9</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1120</x>
+      <y>524</y>
+      <w>430</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;capa&gt;&gt; Service
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>524</y>
+      <w>391</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;capa&gt;&gt; Repository
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>524</y>
+      <w>299</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;capa&gt;&gt; Model
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>604</y>
+      <w>399</w>
+      <h>214</h>
+    </coordinates>
+    <panel_attributes>ClienteForm
+-
+- _controller: ClienteController
+- _idEditando: int
+-
++ ClienteForm(embebido)
++ ActualizarDatos()
+- Agregar_Click() / Editar_Click()
+- Eliminar_Click() / Cancelar_Click()
+- RefrescarGrilla() / LimpiarCampos()
+- SalirDeEdicion()
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>499</x>
+      <y>604</y>
+      <w>561</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>ClienteController
+-
+- _service: ClienteService
+-
++ RegistrarCliente(ClienteDTO dto): void
++ ActualizarCliente(int id, ClienteDTO dto): void
++ EliminarCliente(int id): void
++ GetClientes(): List&lt;Cliente&gt;
+bg=#d9f2d9</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1120</x>
+      <y>604</y>
+      <w>430</w>
+      <h>178</h>
+    </coordinates>
+    <panel_attributes>ClienteService
+-
+- _repository: ClienteRepository
+-
++ ValidarRegistro(ClienteDTO dto): void
++ RegistrarCliente(dto): void
++ ActualizarCliente(int id, dto): void
++ EliminarCliente(int id): void
++ GetClientes(): List&lt;Cliente&gt;
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>604</y>
+      <w>391</w>
+      <h>142</h>
+    </coordinates>
+    <panel_attributes>ClienteRepository
+&lt;&lt;Singleton&gt;&gt; : EfRepository&lt;Cliente&gt;
+-
+- _instancia: ClienteRepository
+-
+- ClienteRepository()
++ GetInstance(): ClienteRepository
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>604</y>
+      <w>299</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Cliente
+-
+_id, _nombre, _telefono, _email
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>868</y>
+      <w>399</w>
+      <h>214</h>
+    </coordinates>
+    <panel_attributes>LugarEventoForm
+-
+- _controller: LugarEventoController
+- _idEditando: int
+-
++ LugarEventoForm(embebido)
++ ActualizarDatos()
+- Agregar_Click() / Editar_Click()
+- Eliminar_Click() / Cancelar_Click()
+- RefrescarGrilla() / LimpiarCampos()
+- SalirDeEdicion()
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>499</x>
+      <y>868</y>
+      <w>561</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>LugarEventoController
+-
+- _service: LugarEventoService
+-
++ RegistrarLugarEvento(LugarEventoDTO dto): void
++ ActualizarLugarEvento(int id, LugarEventoDTO dto): void
++ EliminarLugarEvento(int id): void
++ GetLugaresEvento(): List&lt;LugarEvento&gt;
+bg=#d9f2d9</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1120</x>
+      <y>868</y>
+      <w>430</w>
+      <h>178</h>
+    </coordinates>
+    <panel_attributes>LugarEventoService
+-
+- _repository: LugarEventoRepository
+-
++ ValidarRegistro(LugarEventoDTO dto): void
++ RegistrarLugarEvento(dto): void
++ ActualizarLugarEvento(int id, dto): void
++ EliminarLugarEvento(int id): void
++ GetLugaresEvento(): List&lt;LugarEvento&gt;
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>868</y>
+      <w>391</w>
+      <h>142</h>
+    </coordinates>
+    <panel_attributes>LugarEventoRepository
+&lt;&lt;Singleton&gt;&gt; : EfRepository&lt;LugarEvento&gt;
+-
+- _instancia: LugarEventoRepository
+-
+- LugarEventoRepository()
++ GetInstance(): LugarEventoRepository
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>868</y>
+      <w>299</w>
+      <h>106</h>
+    </coordinates>
+    <panel_attributes>LugarEvento
+-
+_id, _nombre, _precio
+-
+implementa IItemPresupuesto
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>1132</y>
+      <w>399</w>
+      <h>214</h>
+    </coordinates>
+    <panel_attributes>ServicioAdicionalForm
+-
+- _controller: ServicioAdicionalController
+- _idEditando: int
+-
++ ServicioAdicionalForm(embebido)
++ ActualizarDatos()
+- Agregar_Click() / Editar_Click()
+- Eliminar_Click() / Cancelar_Click()
+- RefrescarGrilla() / LimpiarCampos()
+- SalirDeEdicion()
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>499</x>
+      <y>1132</y>
+      <w>561</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>ServicioAdicionalController
+-
+- _service: ServicioAdicionalService
+-
++ RegistrarServicioAdicional(ServicioAdicionalDTO dto): void
++ ActualizarServicioAdicional(int id, ServicioAdicionalDTO dto): void
++ EliminarServicioAdicional(int id): void
++ GetServiciosAdicionales(): List&lt;ServicioAdicional&gt;
+bg=#d9f2d9</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1120</x>
+      <y>1132</y>
+      <w>430</w>
+      <h>178</h>
+    </coordinates>
+    <panel_attributes>ServicioAdicionalService
+-
+- _repository: ServicioAdicionalRepository
+-
++ ValidarRegistro(ServicioAdicionalDTO dto): void
++ RegistrarServicioAdicional(dto): void
++ ActualizarServicioAdicional(int id, dto): void
++ EliminarServicioAdicional(int id): void
++ GetServiciosAdicionales(): List&lt;ServicioAdicional&gt;
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>1132</y>
+      <w>391</w>
+      <h>142</h>
+    </coordinates>
+    <panel_attributes>ServicioAdicionalRepository
+&lt;&lt;Singleton&gt;&gt; : EfRepository&lt;ServicioAdicional&gt;
+-
+- _instancia: ServicioAdicionalRepository
+-
+- ServicioAdicionalRepository()
++ GetInstance(): ServicioAdicionalRepository
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>1132</y>
+      <w>299</w>
+      <h>106</h>
+    </coordinates>
+    <panel_attributes>ServicioAdicional
+-
+_id, _nombre, _precio
+-
+implementa IItemPresupuesto
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>1396</y>
+      <w>399</w>
+      <h>214</h>
+    </coordinates>
+    <panel_attributes>PlatilloForm
+-
+- _controller: PlatilloController
+- _idEditando: int
+-
++ PlatilloForm(embebido)
++ ActualizarDatos()
+- Agregar_Click() / Editar_Click()
+- Eliminar_Click() / Cancelar_Click()
+- RefrescarGrilla() / LimpiarCampos()
+- SalirDeEdicion()
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>499</x>
+      <y>1396</y>
+      <w>561</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>PlatilloController
+-
+- _service: PlatilloService
+-
++ RegistrarPlatillo(PlatilloDTO dto): void
++ ActualizarPlatillo(int id, PlatilloDTO dto): void
++ EliminarPlatillo(int id): void
++ GetPlatillos(): List&lt;Platillo&gt;
+bg=#d9f2d9</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1120</x>
+      <y>1396</y>
+      <w>430</w>
+      <h>178</h>
+    </coordinates>
+    <panel_attributes>PlatilloService
+-
+- _repository: PlatilloRepository
+-
++ ValidarRegistro(PlatilloDTO dto): void
++ RegistrarPlatillo(dto): void
++ ActualizarPlatillo(int id, dto): void
++ EliminarPlatillo(int id): void
++ GetPlatillos(): List&lt;Platillo&gt;
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>1396</y>
+      <w>391</w>
+      <h>142</h>
+    </coordinates>
+    <panel_attributes>PlatilloRepository
+&lt;&lt;Singleton&gt;&gt; : EfRepository&lt;Platillo&gt;
+-
+- _instancia: PlatilloRepository
+-
+- PlatilloRepository()
++ GetInstance(): PlatilloRepository
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>1396</y>
+      <w>299</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Platillo
+-
+_id, _nombre, _precio, _tipo
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>1660</y>
+      <w>399</w>
+      <h>286</h>
+    </coordinates>
+    <panel_attributes>MenuForm
+-
+- _controller: MenuController
+- _platilloController: PlatilloController
+- _idsPlatillosTildados: List&lt;int&gt;
+- _idEditando: int
+-
++ MenuForm(embebido)
++ ActualizarDatos()
+- Agregar_Click() / Editar_Click()
+- Eliminar_Click() / Cancelar_Click()
+- FiltrarPlatillos()
+- NuevoPlatillo_Click()
+- RefrescarGrilla() / LimpiarCampos()
+- SalirDeEdicion()
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>499</x>
+      <y>1660</y>
+      <w>561</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>MenuController
+-
+- _service: MenuService
+-
++ RegistrarMenu(MenuDTO dto): void
++ ActualizarMenu(int id, MenuDTO dto): void
++ EliminarMenu(int id): void
++ GetMenus(): List&lt;Menu&gt;
+bg=#d9f2d9</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1120</x>
+      <y>1660</y>
+      <w>430</w>
+      <h>214</h>
+    </coordinates>
+    <panel_attributes>MenuService
+-
+- _repository: MenuRepository
+- _platilloRepository: PlatilloRepository
+-
++ ValidarRegistro(MenuDTO dto): void
++ RegistrarMenu(dto): void
++ ActualizarMenu(int id, dto): void
++ EliminarMenu(int id): void
++ GetMenus(): List&lt;Menu&gt;
+- ArmarMenu(dto): Menu
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>1660</y>
+      <w>391</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>MenuRepository
+&lt;&lt;Singleton&gt;&gt; : EfRepository&lt;Menu&gt;
+-
+- _instancia: MenuRepository
+-
+- MenuRepository()
++ GetInstance(): MenuRepository
+# Consulta(): IQueryable&lt;Menu&gt;  (con Platillos)
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>1660</y>
+      <w>299</w>
+      <h>124</h>
+    </coordinates>
+    <panel_attributes>Menu
+-
+_id, _nombre, _montoTotal,
+_platillos, _aptitud
+-
++ CalcularMonto(): decimal
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1120</x>
+      <y>1996</y>
+      <w>430</w>
+      <h>124</h>
+    </coordinates>
+    <panel_attributes>ItemMenuService
+-
+- _menuRepository: MenuRepository
+-
++ ValidarRegistro(ItemMenuDTO dto): void
++ CrearItemMenu(ItemMenuDTO dto): ItemMenu
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>1996</y>
+      <w>299</w>
+      <h>196</h>
+    </coordinates>
+    <panel_attributes>ItemMenu
+-
+_id, _cantidad, _item, _precioMenu,
+_montoTotal, _paraAdulto
+-
++ CalcularMonto(): decimal
++ Copiar(): ItemMenu
+-
+renglón del presupuesto:
+se guarda junto con él
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>2242</y>
+      <w>399</w>
+      <h>394</h>
+    </coordinates>
+    <panel_attributes>PresupuestoForm
+-
+- _controller: PresupuestoController
+- controllers de cliente, lugar, servicio y menú
+- _items: List&lt;ItemMenuDTO&gt;
+- _idEditando / _idViendo: int
+- _borrador...: datos del formulario
+-
++ PresupuestoForm(embebido)
++ ActualizarDatos()
+- ArmarDTO(): PresupuestoDTO
+- RecalcularMonto()
+- Registrar_Click() / Editar_Click()
+- CargarEnFormulario(presupuesto)
+- SelectionChanged() -&gt; VerPresupuesto()
+- CerrarVista() / HabilitarCampos()
+- GuardarBorrador() / RestaurarBorrador()
+- CambiarEstado_Click() / Clonar_Click()
+- GenerarPdf_Click() / Eliminar_Click()
+- RefrescarGrilla() / MarcarFila()
+- FiltrarServicios() / LimpiarCampos()
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>499</x>
+      <y>2242</y>
+      <w>561</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>PresupuestoController
+-
+- _service: PresupuestoService
+-
++ RegistrarPresupuesto(PresupuestoDTO dto): void
++ ActualizarPresupuesto(int id, PresupuestoDTO dto): void
++ EliminarPresupuesto(int id): void
++ CalcularMonto(dto): decimal
++ ValidarEdicion(int id): void
++ CambiarEstado(int id, estado): void
++ ClonarPresupuesto(int id): void
++ GenerarPdf(int id, ruta): void
++ GetPresupuestos(): List&lt;Presupuesto&gt;
+bg=#d9f2d9</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1120</x>
+      <y>2242</y>
+      <w>430</w>
+      <h>376</h>
+    </coordinates>
+    <panel_attributes>PresupuestoService
+-
+- _repository: PresupuestoRepository
+- _clienteRepository: ClienteRepository
+- _lugarRepository: LugarEventoRepository
+- _servicioRepository: ServicioAdicionalRepository
+- _itemMenuService: ItemMenuService
+-
++ ValidarRegistro(PresupuestoDTO dto): void
+- Construir(dto): Presupuesto
++ CalcularMonto(dto): decimal
++ RegistrarPresupuesto(dto): void
++ ValidarEdicion(int id): Presupuesto
++ ActualizarPresupuesto(int id, dto): void
++ EliminarPresupuesto(int id): void
++ CambiarEstado(int id, estado): void
+- ValidarSuperposicion(presupuesto): void
++ ClonarPresupuesto(int id): void
++ GenerarPdf(int id, ruta): void
++ GetPresupuestos(): List&lt;Presupuesto&gt;
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>2242</y>
+      <w>391</w>
+      <h>178</h>
+    </coordinates>
+    <panel_attributes>PresupuestoRepository
+&lt;&lt;Singleton&gt;&gt; : EfRepository&lt;Presupuesto&gt;
+-
+- _instancia: PresupuestoRepository
+-
+- PresupuestoRepository()
++ GetInstance(): PresupuestoRepository
+# Consulta(): IQueryable&lt;Presupuesto&gt;
+   (con cliente, lugar, servicios y menús)
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>2242</y>
+      <w>299</w>
+      <h>196</h>
+    </coordinates>
+    <panel_attributes>Presupuesto
+-
+_id, _fechaCreacion, _fechaEvento,
+_estado, _cantidadHoras, _cliente,
+_lugar, _precioLugar, _montoTotal,
+_serviciosAdicionales, _menus
+-
++ CalcularMonto(): decimal
++ CambiarEstado(estado): void
++ ClonarPresupuesto(): Presupuesto
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>2478</y>
+      <w>299</w>
+      <h>106</h>
+    </coordinates>
+    <panel_attributes>ServicioPresupuestado
+-
+_id, _servicio, _precio
+-
+renglón del presupuesto
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>2706</y>
+      <w>399</w>
+      <h>196</h>
+    </coordinates>
+    <panel_attributes>MenuPrincipalForm
+-
+- _pantallas: Dictionary&lt;Button, Form&gt;
+- _pantallaActual: Form?
+- _pestanaActiva: Button?
+-
++ MenuPrincipalForm()
+- CrearPantalla(pestana): Form
+- AbrirPestana(pestana): void
+- btn..._Click()  (uno por pestaña)
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>2932</y>
+      <w>399</w>
+      <h>124</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+IPantallaActualizable
+-
++ ActualizarDatos(): void
+-
+la implementan las 6 pantallas
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>3086</y>
+      <w>399</w>
+      <h>178</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;static&gt;&gt;
+Estilo
+-
++ Aplicar(Form, conEncabezado): void
++ EstilarBarra(barra, titulo, contenido)
++ MarcarPestana(pestana, activa)
++ FormatoMoneda(grilla, columna)
+- Agrandar() / EstirarGrillas()
+- EstiloBoton() / EstiloGrilla()
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1120</x>
+      <y>2706</y>
+      <w>430</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>PresupuestoPdfService
+-
+- _documento: PdfDocument
+-
++ Generar(Presupuesto, ruta): void
+- NuevaPagina() / Escribir()
+-
+usa PDFsharp 6.2.0
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1120</x>
+      <y>2896</y>
+      <w>430</w>
+      <h>124</h>
+    </coordinates>
+    <panel_attributes>DatosDePruebaService
+-
++ Cargar(): void  (solo si la base está vacía)
+- CargarClientes() / CargarLugares()
+- CargarServicios() / CargarPlatillos()
+- CargarMenus()
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>2706</y>
+      <w>391</w>
+      <h>124</h>
+    </coordinates>
+    <panel_attributes>AppDbContextFactory
+: IDesignTimeDbContextFactory
+-
++ CreateDbContext(args): AppDbContext
+-
+solo para dotnet ef (migraciones)
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1610</x>
+      <y>2866</y>
+      <w>391</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>Migrations/
+-
+Inicial: tablas, relaciones
+y columnas de precios
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>40</x>
+      <y>3334</y>
+      <w>2320</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>Otras dependencias entre capas (además de las flechas de cada fila)
+-
+• View: MenuPrincipalForm crea cada pantalla una sola vez (pestañas); las pantallas implementan IPantallaActualizable y aplican Estilo.
+• View: PresupuestoForm usa también ClienteController, LugarEventoController, ServicioAdicionalController y MenuController (combos y servicios);
+   MenuForm usa también PlatilloController.
+• Service: PresupuestoService usa ClienteRepository, LugarEventoRepository, ServicioAdicionalRepository, ItemMenuService y PresupuestoPdfService.
+   MenuService usa PlatilloRepository; ItemMenuService usa MenuRepository.
+• Service: al eliminar, ClienteService, LugarEventoService, ServicioAdicionalService y MenuService consultan PresupuestoRepository,
+   y PlatilloService consulta MenuRepository (no se borra lo que está en uso).
+• Service: al armar un presupuesto se guardan los precios del momento (PrecioLugar y los renglones ServicioPresupuestado e ItemMenu).
+• Repository: cada XRepository es Singleton y hereda de EfRepository&lt;T&gt;, que implementa IRepository&lt;T&gt; sobre AppDbContext (SQLite).
+• Model: Presupuesto referencia Cliente y LugarEvento y se compone de ServicioPresupuestado e ItemMenu (ver UML del Model).
+• Program.Main aplica las migraciones (Database.Migrate), carga DatosDePruebaService si la base está vacía y abre MenuPrincipalForm.
+bg=#ffffff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1795</x>
+      <y>190</y>
+      <w>20</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10;10;10;60</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1991</x>
+      <y>300</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>229</x>
+      <y>371</y>
+      <w>20</w>
+      <h>163</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;..</panel_attributes>
+    <additional_attributes>10;10;10;153</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>769</x>
+      <y>371</y>
+      <w>20</w>
+      <h>163</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;..</panel_attributes>
+    <additional_attributes>10;10;10;153</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1325</x>
+      <y>371</y>
+      <w>20</w>
+      <h>163</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;..</panel_attributes>
+    <additional_attributes>10;10;10;153</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>429</x>
+      <y>624</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1050</x>
+      <y>624</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1540</x>
+      <y>624</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1991</x>
+      <y>624</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>429</x>
+      <y>888</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1050</x>
+      <y>888</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1540</x>
+      <y>888</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1991</x>
+      <y>888</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>429</x>
+      <y>1152</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1050</x>
+      <y>1152</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1540</x>
+      <y>1152</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1991</x>
+      <y>1152</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>429</x>
+      <y>1416</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1050</x>
+      <y>1416</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1540</x>
+      <y>1416</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1991</x>
+      <y>1416</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>429</x>
+      <y>1680</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1050</x>
+      <y>1680</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1540</x>
+      <y>1680</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1991</x>
+      <y>1680</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1540</x>
+      <y>2016</y>
+      <w>531</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>521;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>429</x>
+      <y>2262</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1050</x>
+      <y>2262</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1540</x>
+      <y>2262</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1991</x>
+      <y>2262</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>70;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2200</x>
+      <y>2428</y>
+      <w>20</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>10;10;10;50</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1991</x>
+      <y>416</y>
+      <w>50</w>
+      <h>212</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10;10;40;10;40;202;10;202</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1325</x>
+      <y>2608</y>
+      <w>20</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10;98;10;10</additional_attributes>
+  </element>
+</diagram>

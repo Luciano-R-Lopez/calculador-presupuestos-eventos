@@ -1,69 +1,184 @@
-<diagram program="umletino" version="15.1"><zoom_level>7</zoom_level><element><id>UMLClass</id><coordinates><x>294</x><y>14</y><w>224</w><h>201</h></coordinates><panel_attributes>Presupuesto
+<diagram program="umletino" version="15.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>80</x>
+      <y>40</y>
+      <w>307</w>
+      <h>268</h>
+    </coordinates>
+    <panel_attributes>LugarEvento
+-
+- _id: int
+- _nombre: string
+- _precio: decimal
+-
+- LugarEvento()
++ LugarEvento(id, nom, precio)
++ LugarEvento(nom, precio)
++ Copiar(): LugarEvento
++ ToString(): string
++ Descripcion: string {get}
++ CalcularMonto(): decimal
++ CopiarItem(): IItemPresupuesto
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>436</x>
+      <y>40</y>
+      <w>430</w>
+      <h>376</h>
+    </coordinates>
+    <panel_attributes>Presupuesto
 -
 - _id: int
 - _fechaCreacion: DateTime
 - _fechaEvento: DateTime
 - _estado: EstadoPresupuesto
 - _cantidadHoras: int
-- _serviciosAdicionales: List &lt;ServicioAdicional&gt;
-- _cliente: Cliente
-- _lugar: LugarEvento
+- _cliente: Cliente?
+- _lugar: LugarEvento?
+- _precioLugar: decimal
+- _serviciosAdicionales: List&lt;ServicioPresupuestado&gt;
 - _menus: List&lt;ItemMenu&gt;
+- _itemsExtra: List&lt;IItemPresupuesto&gt;
 - _montoTotal: decimal
-
 -
-+ Presupuesto(): Presupuesto
++ Presupuesto()
++ ObtenerItems(): List&lt;IItemPresupuesto&gt;
 + CalcularMonto(): decimal
-+ CambiarEstado(estado): void
++ CambiarEstado(estado: EstadoPresupuesto): void
 + ClonarPresupuesto(): Presupuesto
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>14</y><w>105</w><h>60</h></coordinates><panel_attributes>&lt;&lt;EstadoPresupuesto&gt;&gt;
--
-- Nuevo
-- Enviado
-- Pagado
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>91</y><w>217</w><h>114</h></coordinates><panel_attributes>LugarEvento
--
-- _id: int
-- _nombre: string
-- _precio: decimal
--
-+ LugarEvento(id, nom, precio): LugarEvento
-+ LugarEvento(nom, precio): LugarEvento
-+ Copiar(): LugarEvento
-+ ToString(): string
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>224</y><w>203</w><h>125</h></coordinates><panel_attributes>Cliente
+bg=#d6e9ff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>946</x>
+      <y>40</y>
+      <w>261</w>
+      <h>214</h>
+    </coordinates>
+    <panel_attributes>Cliente
 -
 - _id: int
 - _nombre: string
 - _telefono: string
 - _email: string
 -
-+ Cliente(id, nom, tel, email): Cliente
-+ Cliente(nom, tel, email): Cliente
-+ Copiar(): Cliente
+- Cliente()
++ Cliente(id, nom, tel, email)
++ Cliente(nom, tel, email)
 + ToString(): string
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>630</x><y>364</y><w>259</w><h>114</h></coordinates><panel_attributes>ServicioAdicional
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>946</x>
+      <y>314</y>
+      <w>160</w>
+      <h>124</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
+EstadoPresupuesto
+-
+Nuevo
+Enviado
+Pagado
+bg=#d9f2d9</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>80</x>
+      <y>528</y>
+      <w>307</w>
+      <h>268</h>
+    </coordinates>
+    <panel_attributes>ServicioAdicional
 -
 - _id: int
 - _nombre: string
 - _precio: decimal
 -
-+ ServicioAdicional(id, nom, precio): ServicioAdicional
-+ ServicioAdicional(nom, precio): ServicioAdicional
+- ServicioAdicional()
++ ServicioAdicional(id, nom, precio)
++ ServicioAdicional(nom, precio)
 + Copiar(): ServicioAdicional
 + ToString(): string
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>266</x><y>280</y><w>252</w><h>125</h></coordinates><panel_attributes>ItemMenu
++ Descripcion: string {get}
++ CalcularMonto(): decimal
++ CopiarItem(): IItemPresupuesto
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>436</x>
+      <y>528</y>
+      <w>284</w>
+      <h>232</h>
+    </coordinates>
+    <panel_attributes>ServicioPresupuestado
+-
+- _id: int
+- _servicio: ServicioAdicional
+- _precio: decimal
+-
+- ServicioPresupuestado()
++ ServicioPresupuestado(servicio)
++ Copiar(): ServicioPresupuestado
++ Descripcion: string {get}
++ CalcularMonto(): decimal
++ CopiarItem(): IItemPresupuesto
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>790</x>
+      <y>528</y>
+      <w>353</w>
+      <h>304</h>
+    </coordinates>
+    <panel_attributes>ItemMenu
 -
 - _id: int
 - _cantidad: int
 - _item: Menu
+- _precioMenu: decimal
 - _montoTotal: decimal
 - _paraAdulto: bool
 -
-+ ItemMenu(cantidad, menu, paraAdulto): ItemMenu
-+ ItemMenu(id, cantidad, menu, paraAdulto): ItemMenu
+- ItemMenu()
++ ItemMenu(cantidad, menu, paraAdulto)
++ ItemMenu(id, cantidad, menu, paraAdulto)
 + CalcularMonto(): decimal
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>280</x><y>434</y><w>175</w><h>190</h></coordinates><panel_attributes>Menu
++ Copiar(): ItemMenu
++ Descripcion: string {get}
++ CopiarItem(): IItemPresupuesto
+bg=#fff3c4</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1223</x>
+      <y>528</y>
+      <w>307</w>
+      <h>340</h>
+    </coordinates>
+    <panel_attributes>Menu
 -
 - _id: int
 - _nombre: string
@@ -71,8 +186,9 @@
 - _platillos: List&lt;Platillo&gt;
 - _aptitud: List&lt;Aptitud&gt;
 -
-+ Menu(nombre): Menu
-+ Menu(id, nombre): Menu
+- Menu()
++ Menu(nombre)
++ Menu(id, nombre)
 + AgregarPlatillo(platillo): void
 + EliminarPlatillo(platillo): void
 + AgregarAptitud(aptitud): void
@@ -80,25 +196,265 @@
 + CalcularMonto(): decimal
 + Copiar(): Menu
 + ToString(): string
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>532</x><y>490</y><w>220</w><h>125</h></coordinates><panel_attributes>Platillo
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1594</x>
+      <y>528</y>
+      <w>145</w>
+      <h>124</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
+Aptitud
+-
+Veganos
+Vegetarianos
+Celiacos
+bg=#d9f2d9</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>436</x>
+      <y>978</y>
+      <w>284</w>
+      <h>124</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+IItemPresupuesto
+-
++ Descripcion: string {get}
++ CalcularMonto(): decimal
++ CopiarItem(): IItemPresupuesto
+bg=#ffe0c2</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1223</x>
+      <y>978</y>
+      <w>307</w>
+      <h>232</h>
+    </coordinates>
+    <panel_attributes>Platillo
 -
 - _id: int
 - _nombre: string
 - _precio: decimal
 - _tipo: TipoPlatillo
 -
-+ Platillo(nombre, precio, tipo): Platillo
-+ Platillo(id, nombre, precio, tipo): Platillo
+- Platillo()
++ Platillo(id, nombre, precio, tipo)
++ Platillo(nombre, precio, tipo)
 + Copiar(): Platillo
 + ToString(): string
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>791</x><y>490</y><w>105</w><h>60</h></coordinates><panel_attributes>&lt;&lt;TipoPlatillo&gt;&gt;
+bg=#e6e6e6</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1594</x>
+      <y>978</y>
+      <w>145</w>
+      <h>124</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enumeration&gt;&gt;
+TipoPlatillo
 -
-- Entrada
-- Principal
-- Postre
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>280</x><y>651</y><w>105</w><h>60</h></coordinates><panel_attributes>&lt;&lt;Aptitud&gt;&gt;
+Entrada
+Principal
+Postre
+bg=#d9f2d9</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>80</x>
+      <y>1280</y>
+      <w>1100</w>
+      <h>178</h>
+    </coordinates>
+    <panel_attributes>Notas
 -
-- Veganos
-- Vegetarianos
-- Celiacos
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>511</x><y>35</y><w>126</w><h>14</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>170;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>511</x><y>98</y><w>126</w><h>14</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>170;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>511</x><y>154</y><w>126</w><h>133</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>170;180;90;180;90;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>511</x><y>189</y><w>126</w><h>238</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;50;10;50;330;170;330</additional_attributes></element><element><id>Relation</id><coordinates><x>245</x><y>98</y><w>56</w><h>245</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>70;10;10;10;10;340;30;340</additional_attributes></element><element><id>Relation</id><coordinates><x>224</x><y>357</y><w>63</w><h>126</h></coordinates><panel_attributes>lt=&lt;-</panel_attributes><additional_attributes>80;170;10;170;10;10;60;10</additional_attributes></element><element><id>Relation</id><coordinates><x>448</x><y>511</y><w>91</w><h>14</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;120;10</additional_attributes></element><element><id>Relation</id><coordinates><x>746</x><y>511</y><w>52</w><h>14</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>64;10;9;10</additional_attributes></element><element><id>Relation</id><coordinates><x>326</x><y>617</y><w>14</w><h>41</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>9;49;9;11</additional_attributes></element></diagram>
+• Precios congelados: Presupuesto.PrecioLugar, ServicioPresupuestado.Precio e ItemMenu.PrecioMenu guardan el precio
+  del momento en que se cotizó; si después sube un precio, el presupuesto no cambia.
+• Presupuesto.CalcularMonto = PrecioLugar + monto de cada renglón (servicios, menús y extras).
+• Los constructores privados sin parámetros los usa Entity Framework.
+• ItemsExtra (otros IItemPresupuesto) no se guarda en la base de datos.
+-
+Colores: azul = Presupuesto · amarillo = renglones · gris = entidades · verde = enumeraciones · naranja = interfaz
+bg=#ffffff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>377</x>
+      <y>100</y>
+      <w>69</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1</panel_attributes>
+    <additional_attributes>10;10;59;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>856</x>
+      <y>100</y>
+      <w>100</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1</panel_attributes>
+    <additional_attributes>90;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>856</x>
+      <y>364</y>
+      <w>100</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;..</panel_attributes>
+    <additional_attributes>90;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>568</x>
+      <y>406</y>
+      <w>20</w>
+      <h>132</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>10;10;10;122</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>818</x>
+      <y>406</y>
+      <w>20</w>
+      <h>132</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..*</panel_attributes>
+    <additional_attributes>10;10;10;122</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>377</x>
+      <y>578</y>
+      <w>69</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1</panel_attributes>
+    <additional_attributes>10;10;59;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1133</x>
+      <y>578</y>
+      <w>100</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1</panel_attributes>
+    <additional_attributes>90;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1366</x>
+      <y>858</y>
+      <w>20</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1..*</panel_attributes>
+    <additional_attributes>10;10;10;120</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1520</x>
+      <y>578</y>
+      <w>84</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;..</panel_attributes>
+    <additional_attributes>74;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1520</x>
+      <y>1028</y>
+      <w>84</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;..</panel_attributes>
+    <additional_attributes>74;10;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>568</x>
+      <y>750</y>
+      <w>20</w>
+      <h>238</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10;228;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>710</x>
+      <y>822</y>
+      <w>210</w>
+      <h>201</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10;191;200;191;200;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>223</x>
+      <y>786</y>
+      <w>223</w>
+      <h>237</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>213;227;10;227;10;10</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>30</x>
+      <y>90</y>
+      <w>416</w>
+      <h>997</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>406;987;10;987;10;10;50;10</additional_attributes>
+  </element>
+</diagram>
