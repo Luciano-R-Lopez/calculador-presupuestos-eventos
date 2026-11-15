@@ -226,7 +226,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             //
             btnRegistrar.Location = new Point(20, 645);
             btnRegistrar.Name = "btnRegistrar";
-            btnRegistrar.Size = new Size(150, 32);
+            btnRegistrar.Size = new Size(300, 32);
             btnRegistrar.TabIndex = 18;
             btnRegistrar.Text = "Registrar presupuesto";
             btnRegistrar.UseVisualStyleBackColor = true;

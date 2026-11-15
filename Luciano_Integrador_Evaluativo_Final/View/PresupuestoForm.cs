@@ -568,6 +568,8 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             CargarEnFormulario(seleccionado);
 
             btnRegistrar.Text = "Guardar cambios";
+            // Se achica para dejar lugar a Cancelar edición, en la misma fila.
+            btnRegistrar.Width = btnCancelarEdicion.Width;
             btnCancelarEdicion.Visible = true;
             RecalcularMonto();
         }
@@ -775,6 +777,8 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         {
             _idEditando = 0;
             btnRegistrar.Text = "Registrar presupuesto";
+            // Ancho completo de la columna, igual que Cerrar vista.
+            btnRegistrar.Width = btnCerrarVista.Width;
             btnCancelarEdicion.Visible = false;
         }
 
