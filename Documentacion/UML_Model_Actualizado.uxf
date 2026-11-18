@@ -40,7 +40,6 @@ bg=#e6e6e6</panel_attributes>
 - _precioLugar: decimal
 - _serviciosAdicionales: List&lt;ServicioPresupuestado&gt;
 - _menus: List&lt;ItemMenu&gt;
-- _itemsExtra: List&lt;IItemPresupuesto&gt;
 - _montoTotal: decimal
 -
 + Presupuesto()
@@ -126,9 +125,7 @@ bg=#e6e6e6</panel_attributes>
 - ServicioPresupuestado()
 + ServicioPresupuestado(servicio)
 + Copiar(): ServicioPresupuestado
-+ Descripcion: string {get}
 + CalcularMonto(): decimal
-+ CopiarItem(): IItemPresupuesto
 bg=#fff3c4</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -153,8 +150,6 @@ bg=#fff3c4</panel_attributes>
 + ItemMenu(cantidad, menu, paraAdulto)
 + CalcularMonto(): decimal
 + Copiar(): ItemMenu
-+ Descripcion: string {get}
-+ CopiarItem(): IItemPresupuesto
 bg=#fff3c4</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -213,9 +208,7 @@ bg=#d9f2d9</panel_attributes>
     <panel_attributes>&lt;&lt;interface&gt;&gt;
 IItemPresupuesto
 -
-+ Descripcion: string {get}
 + CalcularMonto(): decimal
-+ CopiarItem(): IItemPresupuesto
 bg=#ffe0c2</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -269,9 +262,9 @@ bg=#d9f2d9</panel_attributes>
 -
 • Precios congelados: Presupuesto.PrecioLugar, ServicioPresupuestado.Precio e ItemMenu.PrecioMenu guardan el precio
   del momento en que se cotizó; si después sube un precio, el presupuesto no cambia.
-• Presupuesto.CalcularMonto = PrecioLugar + monto de cada renglón (servicios, menús y extras).
+• Presupuesto.CalcularMonto = PrecioLugar + monto de cada renglón (servicios y menús).
 • Los constructores privados sin parámetros los usa Entity Framework.
-• ItemsExtra (otros IItemPresupuesto) no se guarda en la base de datos.
+• IItemPresupuesto solo exige CalcularMonto(): un renglón nuevo la implementa y se agrega en ObtenerItems().
 • Las enumeraciones (EstadoPresupuesto, Aptitud, TipoPlatillo) están en la carpeta Comun: las comparten todas las capas.
 -
 Colores: azul = Presupuesto · amarillo = renglones · gris = catálogo · verde = enumeraciones (Comun) · naranja = interfaz

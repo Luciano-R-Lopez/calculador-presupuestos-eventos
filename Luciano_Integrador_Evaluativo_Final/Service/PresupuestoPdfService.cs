@@ -98,17 +98,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
                 _y += 10;
             }
 
-            // Otros ítems: se detallan a través de IItemPresupuesto.
-            if (presupuesto.ItemsExtra.Count > 0)
-            {
-                Escribir("Otros ítems", _fuenteNegrita);
-                foreach (IItemPresupuesto extra in presupuesto.ItemsExtra)
-                {
-                    Escribir(extra.Descripcion + " - " + extra.CalcularMonto().ToString("C"), _fuenteNormal);
-                }
-                _y += 10;
-            }
-
             Escribir("TOTAL: " + presupuesto.MontoTotal.ToString("C"), _fuenteTitulo);
 
             // Dispose antes de guardar, para que se escriba todo lo dibujado.

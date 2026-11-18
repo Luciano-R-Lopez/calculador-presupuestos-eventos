@@ -20,9 +20,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         // Precio del lugar al cotizar.
         private decimal _precioLugar;
         private List<ItemMenu> _menus;
-
-        // Otros ítems a cobrar (hoy ninguno); no se guardan en la base.
-        private List<IItemPresupuesto> _itemsExtra;
         private decimal _montoTotal;
 
         // Presupuesto vacío: estado Nuevo y fecha de creación actual.
@@ -32,7 +29,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             Estado = EstadoPresupuesto.Nuevo;
             _serviciosAdicionales = new List<ServicioPresupuestado>();
             _menus = new List<ItemMenu>();
-            _itemsExtra = new List<IItemPresupuesto>();
         }
 
         public int Id
@@ -83,17 +79,14 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
         {
             get { return _menus; }
         }
-        public List<IItemPresupuesto> ItemsExtra
-        {
-            get { return _itemsExtra; }
-        }
         public decimal MontoTotal
         {
             get { return _montoTotal; }
             set { _montoTotal = value; }
         }
 
-        // Renglones del presupuesto (servicios, menús y extras). El lugar va aparte, en PrecioLugar.
+        // Renglones del presupuesto (servicios y menús). El lugar va aparte, en PrecioLugar.
+        // Un tipo de renglón nuevo implementa IItemPresupuesto y se agrega acá; CalcularMonto no cambia.
         public List<IItemPresupuesto> ObtenerItems()
         {
             List<IItemPresupuesto> items = new List<IItemPresupuesto>();
@@ -105,10 +98,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             foreach (ItemMenu menu in _menus)
             {
                 items.Add(menu);
-            }
-            foreach (IItemPresupuesto extra in _itemsExtra)
-            {
-                items.Add(extra);
             }
             return items;
         }
@@ -165,11 +154,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             foreach (ItemMenu item in _menus)
             {
                 copia.Menus.Add(item.Copiar());
-            }
-
-            foreach (IItemPresupuesto extra in _itemsExtra)
-            {
-                copia.ItemsExtra.Add(extra.CopiarItem());
             }
 
             copia.CalcularMonto();

@@ -85,9 +85,6 @@ namespace Luciano_Integrador_Evaluativo_Final.Repository
                 presupuesto.HasOne(p => p.Lugar).WithMany().HasForeignKey("LugarId").IsRequired().OnDelete(DeleteBehavior.Restrict);
                 presupuesto.HasMany(p => p.ServiciosAdicionales).WithOne().HasForeignKey("PresupuestoId").IsRequired().OnDelete(DeleteBehavior.Cascade);
                 presupuesto.HasMany(p => p.Menus).WithOne().HasForeignKey("PresupuestoId").IsRequired().OnDelete(DeleteBehavior.Cascade);
-
-                // No se guardan en la base.
-                presupuesto.Ignore(p => p.ItemsExtra);
             });
 
             // Renglón de servicio con su precio al cotizar. No se puede borrar un servicio en uso.

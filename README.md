@@ -162,9 +162,10 @@ datos. Los renglones apuntan al catálogo, guardan el precio de ese momento y sa
 
 ### Polimorfismo: `IItemPresupuesto`
 
-Solo los renglones (`ServicioPresupuestado`, `ItemMenu`) implementan `IItemPresupuesto`: cada uno sabe
-describirse, calcular su monto con el precio guardado y copiarse para clonar. `Presupuesto.CalcularMonto`
-los recorre sin conocer su tipo, así que un tipo de ítem nuevo se suma sin cambiar ese método.
+Solo los renglones (`ServicioPresupuestado`, `ItemMenu`) implementan `IItemPresupuesto`, que exige un único
+método: `CalcularMonto()`, con el precio guardado. `Presupuesto.CalcularMonto` recorre `ObtenerItems()` sin
+conocer el tipo de cada renglón, así que un tipo de ítem nuevo implementa la interfaz, se agrega en
+`ObtenerItems()` y el cálculo no cambia.
 
 ---
 

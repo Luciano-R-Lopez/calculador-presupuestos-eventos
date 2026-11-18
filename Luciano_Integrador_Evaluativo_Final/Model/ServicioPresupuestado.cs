@@ -45,22 +45,10 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             return copia;
         }
 
-        // IItemPresupuesto
-
-        public string Descripcion
-        {
-            get { return Servicio.Nombre; }
-        }
-
-        // Usa el precio guardado, no el actual.
+        // IItemPresupuesto: usa el precio guardado, no el actual.
         public decimal CalcularMonto()
         {
             return Precio;
-        }
-
-        public IItemPresupuesto CopiarItem()
-        {
-            return Copiar();
         }
     }
 }

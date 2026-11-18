@@ -74,25 +74,5 @@ namespace Luciano_Integrador_Evaluativo_Final.Model
             copia.CalcularMonto();
             return copia;
         }
-
-        // IItemPresupuesto
-
-        public string Descripcion
-        {
-            get
-            {
-                string destino = "niños";
-                if (ParaAdulto)
-                {
-                    destino = "adultos";
-                }
-                return Item.Nombre + " - " + Cantidad + " " + destino;
-            }
-        }
-
-        public IItemPresupuesto CopiarItem()
-        {
-            return Copiar();
-        }
     }
 }
