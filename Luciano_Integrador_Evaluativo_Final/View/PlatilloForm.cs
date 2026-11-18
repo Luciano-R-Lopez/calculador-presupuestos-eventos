@@ -1,6 +1,6 @@
 using Luciano_Integrador_Evaluativo_Final.Controller;
 using Luciano_Integrador_Evaluativo_Final.Dto;
-using Luciano_Integrador_Evaluativo_Final.Model;
+using Luciano_Integrador_Evaluativo_Final.Comun;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -71,10 +71,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Carga el seleccionado en los campos y pasa a modo edición.
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            Platillo? platillo = null;
+            PlatilloDTO? platillo = null;
             if (dataGridViewPlatillos.CurrentRow != null)
             {
-                platillo = dataGridViewPlatillos.CurrentRow.DataBoundItem as Platillo;
+                platillo = dataGridViewPlatillos.CurrentRow.DataBoundItem as PlatilloDTO;
             }
 
             if (platillo == null)
@@ -96,10 +96,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Pide confirmación; el Service lo rechaza si está en uso.
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            Platillo? seleccionado = null;
+            PlatilloDTO? seleccionado = null;
             if (dataGridViewPlatillos.CurrentRow != null)
             {
-                seleccionado = dataGridViewPlatillos.CurrentRow.DataBoundItem as Platillo;
+                seleccionado = dataGridViewPlatillos.CurrentRow.DataBoundItem as PlatilloDTO;
             }
 
             if (seleccionado == null)
@@ -154,7 +154,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private void RefrescarGrilla()
         {
             dataGridViewPlatillos.DataSource =
-                new BindingList<Platillo>(_controller.GetPlatillos());
+                new BindingList<PlatilloDTO>(_controller.GetPlatillos());
         }
 
         private void LimpiarCampos()

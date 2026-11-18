@@ -71,9 +71,15 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _repository.Delete(id);
         }
 
-        public List<Platillo> GetPlatillos()
+        // La View recibe DTO, no entidades.
+        public List<PlatilloDTO> GetPlatillos()
         {
-            return _repository.GetTodos();
+            List<PlatilloDTO> platillos = new List<PlatilloDTO>();
+            foreach (Platillo platillo in _repository.GetTodos())
+            {
+                platillos.Add(new PlatilloDTO(platillo.Id, platillo.Nombre, platillo.Precio, platillo.Tipo));
+            }
+            return platillos;
         }
     }
 }

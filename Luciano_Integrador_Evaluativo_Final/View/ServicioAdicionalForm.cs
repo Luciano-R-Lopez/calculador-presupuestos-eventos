@@ -1,6 +1,5 @@
 ﻿using Luciano_Integrador_Evaluativo_Final.Controller;
 using Luciano_Integrador_Evaluativo_Final.Dto;
-using Luciano_Integrador_Evaluativo_Final.Model;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -69,10 +68,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Carga el seleccionado en los campos y pasa a modo edición.
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            ServicioAdicional? servicio = null;
+            ServicioAdicionalDTO? servicio = null;
             if (dataGridViewServiciosAdicionales.CurrentRow != null)
             {
-                servicio = dataGridViewServiciosAdicionales.CurrentRow.DataBoundItem as ServicioAdicional;
+                servicio = dataGridViewServiciosAdicionales.CurrentRow.DataBoundItem as ServicioAdicionalDTO;
             }
 
             if (servicio == null)
@@ -93,10 +92,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Pide confirmación; el Service lo rechaza si está en uso.
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            ServicioAdicional? seleccionado = null;
+            ServicioAdicionalDTO? seleccionado = null;
             if (dataGridViewServiciosAdicionales.CurrentRow != null)
             {
-                seleccionado = dataGridViewServiciosAdicionales.CurrentRow.DataBoundItem as ServicioAdicional;
+                seleccionado = dataGridViewServiciosAdicionales.CurrentRow.DataBoundItem as ServicioAdicionalDTO;
             }
 
             if (seleccionado == null)
@@ -151,7 +150,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private void RefrescarGrilla()
         {
             dataGridViewServiciosAdicionales.DataSource =
-                new BindingList<ServicioAdicional>(_controller.GetServiciosAdicionales());
+                new BindingList<ServicioAdicionalDTO>(_controller.GetServiciosAdicionales());
         }
 
         private void LimpiarCampos()

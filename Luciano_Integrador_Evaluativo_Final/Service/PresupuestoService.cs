@@ -1,6 +1,7 @@
 using Luciano_Integrador_Evaluativo_Final.Dto;
 using Luciano_Integrador_Evaluativo_Final.Model;
 using Luciano_Integrador_Evaluativo_Final.Repository;
+using Luciano_Integrador_Evaluativo_Final.Comun;
 using System;
 
 namespace Luciano_Integrador_Evaluativo_Final.Service
@@ -238,9 +239,57 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             pdfService.Generar(presupuesto, ruta);
         }
 
-        public List<Presupuesto> GetPresupuestos()
+        // La View recibe DTO, no entidades: cliente, lugar y servicios como ids (y nombres para mostrar),
+        // y el monto guardado al cotizar.
+        public List<PresupuestoDTO> GetPresupuestos()
         {
-            return _repository.GetTodos();
+            List<PresupuestoDTO> presupuestos = new List<PresupuestoDTO>();
+            foreach (Presupuesto presupuesto in _repository.GetTodos())
+            {
+                presupuestos.Add(ADTO(presupuesto));
+            }
+            return presupuestos;
+        }
+
+        private PresupuestoDTO ADTO(Presupuesto presupuesto)
+        {
+            int idCliente = 0;
+            string cliente = "";
+            if (presupuesto.Cliente != null)
+            {
+                idCliente = presupuesto.Cliente.Id;
+                cliente = presupuesto.Cliente.Nombre;
+            }
+
+            int idLugar = 0;
+            string lugar = "";
+            if (presupuesto.Lugar != null)
+            {
+                idLugar = presupuesto.Lugar.Id;
+                lugar = presupuesto.Lugar.Nombre;
+            }
+
+            List<int> idsServicios = new List<int>();
+            foreach (ServicioPresupuestado renglon in presupuesto.ServiciosAdicionales)
+            {
+                idsServicios.Add(renglon.Servicio.Id);
+            }
+
+            List<ItemMenuDTO> menus = new List<ItemMenuDTO>();
+            foreach (ItemMenu item in presupuesto.Menus)
+            {
+                menus.Add(new ItemMenuDTO(item.Cantidad, item.Item.Id, item.ParaAdulto, item.Item.Nombre));
+            }
+
+            PresupuestoDTO dto = new PresupuestoDTO(presupuesto.FechaEvento, presupuesto.CantidadHoras,
+                idCliente, idLugar, idsServicios, menus);
+            dto.Id = presupuesto.Id;
+            dto.FechaCreacion = presupuesto.FechaCreacion;
+            dto.Estado = presupuesto.Estado;
+            dto.Cliente = cliente;
+            dto.Lugar = lugar;
+            dto.MontoTotal = presupuesto.MontoTotal;
+            return dto;
         }
     }
 }

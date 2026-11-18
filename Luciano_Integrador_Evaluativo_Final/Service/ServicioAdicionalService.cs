@@ -69,9 +69,15 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _repository.Delete(id);
         }
 
-        public List<ServicioAdicional> GetServiciosAdicionales()
+        // La View recibe DTO, no entidades.
+        public List<ServicioAdicionalDTO> GetServiciosAdicionales()
         {
-            return _repository.GetTodos();
+            List<ServicioAdicionalDTO> servicios = new List<ServicioAdicionalDTO>();
+            foreach (ServicioAdicional servicio in _repository.GetTodos())
+            {
+                servicios.Add(new ServicioAdicionalDTO(servicio.Id, servicio.Nombre, servicio.Precio));
+            }
+            return servicios;
         }
     }
 }

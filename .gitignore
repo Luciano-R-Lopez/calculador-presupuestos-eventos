@@ -24,3 +24,6 @@ Thumbs.db
 *.db
 *.db-shm
 *.db-wal
+
+# Notas personales para la defensa (no se versionan)
+Documentacion/Defensa_Implementaciones.html

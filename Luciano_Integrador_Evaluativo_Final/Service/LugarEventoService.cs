@@ -66,9 +66,15 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _repository.Delete(id);
         }
 
-        public List<LugarEvento> GetLugaresEvento()
+        // La View recibe DTO, no entidades.
+        public List<LugarEventoDTO> GetLugaresEvento()
         {
-            return _repository.GetTodos();
+            List<LugarEventoDTO> lugares = new List<LugarEventoDTO>();
+            foreach (LugarEvento lugar in _repository.GetTodos())
+            {
+                lugares.Add(new LugarEventoDTO(lugar.Id, lugar.Nombre, lugar.Precio));
+            }
+            return lugares;
         }
     }
 }

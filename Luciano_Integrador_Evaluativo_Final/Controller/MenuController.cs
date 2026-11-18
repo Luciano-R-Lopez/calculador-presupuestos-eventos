@@ -1,6 +1,4 @@
-using Menu = Luciano_Integrador_Evaluativo_Final.Model.Menu;
 using Luciano_Integrador_Evaluativo_Final.Dto;
-using Luciano_Integrador_Evaluativo_Final.Model;
 using Luciano_Integrador_Evaluativo_Final.Service;
 using System;
 
@@ -32,7 +30,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Controller
             _service.EliminarMenu(id);
         }
 
-        public List<Menu> GetMenus()
+        public List<MenuDTO> GetMenus()
         {
             return _service.GetMenus();
         }

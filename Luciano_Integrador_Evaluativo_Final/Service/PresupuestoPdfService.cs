@@ -2,6 +2,7 @@ using Luciano_Integrador_Evaluativo_Final.Model;
 using PdfSharp.Drawing;
 using PdfSharp.Fonts;
 using PdfSharp.Pdf;
+using Luciano_Integrador_Evaluativo_Final.Comun;
 using System;
 
 namespace Luciano_Integrador_Evaluativo_Final.Service

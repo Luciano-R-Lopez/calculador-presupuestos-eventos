@@ -1,5 +1,6 @@
 using Luciano_Integrador_Evaluativo_Final.Dto;
 using Luciano_Integrador_Evaluativo_Final.Model;
+using Luciano_Integrador_Evaluativo_Final.Comun;
 using System;
 using System.Collections.Generic;
 

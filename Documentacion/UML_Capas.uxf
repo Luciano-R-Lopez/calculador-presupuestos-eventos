@@ -6,9 +6,9 @@
       <x>40</x>
       <y>40</y>
       <w>1510</w>
-      <h>341</h>
+      <h>420</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;capa&gt;&gt; DTO  (datos del formulario que viajan de la View al Service; las relaciones viajan como ids)
+    <panel_attributes>&lt;&lt;capa&gt;&gt; DTO  (datos entre la View y el Service: de ida sin id, de vuelta con id; las relaciones viajan como ids)
 bg=#f9d9ea</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -18,13 +18,16 @@ bg=#f9d9ea</panel_attributes>
       <x>50</x>
       <y>80</y>
       <w>365</w>
-      <h>106</h>
+      <h>140</h>
     </coordinates>
     <panel_attributes>ClienteDTO
 -
+- _id: int
 - _nombre: string
 - _telefono: string
 - _email: string
+-
++ ToString(): string
 bg=#ffffff</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -34,12 +37,15 @@ bg=#ffffff</panel_attributes>
       <x>425</x>
       <y>80</y>
       <w>365</w>
-      <h>106</h>
+      <h>140</h>
     </coordinates>
     <panel_attributes>LugarEventoDTO
 -
+- _id: int
 - _nombre: string
 - _precio: decimal
+-
++ ToString(): string
 bg=#ffffff</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -49,12 +55,15 @@ bg=#ffffff</panel_attributes>
       <x>800</x>
       <y>80</y>
       <w>365</w>
-      <h>106</h>
+      <h>140</h>
     </coordinates>
     <panel_attributes>ServicioAdicionalDTO
 -
+- _id: int
 - _nombre: string
 - _precio: decimal
+-
++ ToString(): string
 bg=#ffffff</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -64,13 +73,16 @@ bg=#ffffff</panel_attributes>
       <x>1175</x>
       <y>80</y>
       <w>365</w>
-      <h>106</h>
+      <h>140</h>
     </coordinates>
     <panel_attributes>PlatilloDTO
 -
+- _id: int
 - _nombre: string
 - _precio: decimal
 - _tipo: TipoPlatillo
+-
++ ToString(): string
 bg=#ffffff</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -78,15 +90,19 @@ bg=#ffffff</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>50</x>
-      <y>196</y>
+      <y>230</y>
       <w>365</w>
-      <h>160</h>
+      <h>210</h>
     </coordinates>
     <panel_attributes>MenuDTO
 -
+- _id: int
 - _nombre: string
+- _montoTotal: decimal
 - _idsPlatillos: List&lt;int&gt;
 - _aptitudes: List&lt;Aptitud&gt;
+-
++ ToString(): string
 bg=#ffffff</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -94,15 +110,16 @@ bg=#ffffff</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>425</x>
-      <y>196</y>
+      <y>230</y>
       <w>365</w>
-      <h>160</h>
+      <h>210</h>
     </coordinates>
     <panel_attributes>ItemMenuDTO
 -
 - _cantidad: int
 - _idMenu: int
 - _paraAdulto: bool
+- _nombreMenu: string
 bg=#ffffff</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -110,19 +127,42 @@ bg=#ffffff</panel_attributes>
     <id>UMLClass</id>
     <coordinates>
       <x>800</x>
-      <y>196</y>
+      <y>230</y>
       <w>365</w>
-      <h>160</h>
+      <h>210</h>
     </coordinates>
     <panel_attributes>PresupuestoDTO
 -
-- _fechaEvento: DateTime
-- _cantidadHoras: int
-- _idCliente: int
-- _idLugar: int
-- _idsServicios: List&lt;int&gt;
+- _id, _cantidadHoras: int
+- _idCliente, _idLugar: int
+- _cliente, _lugar: string
+- _fechaCreacion, _fechaEvento: DateTime
+- _estado: EstadoPresupuesto
+- _idsServiciosAdicionales: List&lt;int&gt;
 - _menus: List&lt;ItemMenuDTO&gt;
+- _montoTotal: decimal
 bg=#ffffff</panel_attributes>
+    <additional_attributes></additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2061</x>
+      <y>40</y>
+      <w>368</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;capa transversal&gt;&gt; Comun
+-
+&lt;&lt;enumeration&gt;&gt; EstadoPresupuesto
+   Nuevo, Enviado, Pagado
+&lt;&lt;enumeration&gt;&gt; Aptitud
+   Veganos, Vegetarianos, Celiacos
+&lt;&lt;enumeration&gt;&gt; TipoPlatillo
+   Entrada, Principal, Postre
+-
+La usan todas las capas; no depende de ninguna.
+bg=#e8f5e9</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
   <element>
@@ -284,7 +324,7 @@ bg=#d6e9ff</panel_attributes>
 + RegistrarCliente(ClienteDTO dto): void
 + ActualizarCliente(int id, ClienteDTO dto): void
 + EliminarCliente(int id): void
-+ GetClientes(): List&lt;Cliente&gt;
++ GetClientes(): List&lt;ClienteDTO&gt;
 bg=#d9f2d9</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -304,7 +344,7 @@ bg=#d9f2d9</panel_attributes>
 + RegistrarCliente(dto): void
 + ActualizarCliente(int id, dto): void
 + EliminarCliente(int id): void
-+ GetClientes(): List&lt;Cliente&gt;
++ GetClientes(): List&lt;ClienteDTO&gt;
 bg=#fff3c4</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -377,7 +417,7 @@ bg=#d6e9ff</panel_attributes>
 + RegistrarLugarEvento(LugarEventoDTO dto): void
 + ActualizarLugarEvento(int id, LugarEventoDTO dto): void
 + EliminarLugarEvento(int id): void
-+ GetLugaresEvento(): List&lt;LugarEvento&gt;
++ GetLugaresEvento(): List&lt;LugarEventoDTO&gt;
 bg=#d9f2d9</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -397,7 +437,7 @@ bg=#d9f2d9</panel_attributes>
 + RegistrarLugarEvento(dto): void
 + ActualizarLugarEvento(int id, dto): void
 + EliminarLugarEvento(int id): void
-+ GetLugaresEvento(): List&lt;LugarEvento&gt;
++ GetLugaresEvento(): List&lt;LugarEventoDTO&gt;
 bg=#fff3c4</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -470,7 +510,7 @@ bg=#d6e9ff</panel_attributes>
 + RegistrarServicioAdicional(ServicioAdicionalDTO dto): void
 + ActualizarServicioAdicional(int id, ServicioAdicionalDTO dto): void
 + EliminarServicioAdicional(int id): void
-+ GetServiciosAdicionales(): List&lt;ServicioAdicional&gt;
++ GetServiciosAdicionales(): List&lt;ServicioAdicionalDTO&gt;
 bg=#d9f2d9</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -490,7 +530,7 @@ bg=#d9f2d9</panel_attributes>
 + RegistrarServicioAdicional(dto): void
 + ActualizarServicioAdicional(int id, dto): void
 + EliminarServicioAdicional(int id): void
-+ GetServiciosAdicionales(): List&lt;ServicioAdicional&gt;
++ GetServiciosAdicionales(): List&lt;ServicioAdicionalDTO&gt;
 bg=#fff3c4</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -563,7 +603,7 @@ bg=#d6e9ff</panel_attributes>
 + RegistrarPlatillo(PlatilloDTO dto): void
 + ActualizarPlatillo(int id, PlatilloDTO dto): void
 + EliminarPlatillo(int id): void
-+ GetPlatillos(): List&lt;Platillo&gt;
++ GetPlatillos(): List&lt;PlatilloDTO&gt;
 bg=#d9f2d9</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -583,7 +623,7 @@ bg=#d9f2d9</panel_attributes>
 + RegistrarPlatillo(dto): void
 + ActualizarPlatillo(int id, dto): void
 + EliminarPlatillo(int id): void
-+ GetPlatillos(): List&lt;Platillo&gt;
++ GetPlatillos(): List&lt;PlatilloDTO&gt;
 bg=#fff3c4</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -660,7 +700,7 @@ bg=#d6e9ff</panel_attributes>
 + RegistrarMenu(MenuDTO dto): void
 + ActualizarMenu(int id, MenuDTO dto): void
 + EliminarMenu(int id): void
-+ GetMenus(): List&lt;Menu&gt;
++ GetMenus(): List&lt;MenuDTO&gt;
 bg=#d9f2d9</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -681,7 +721,7 @@ bg=#d9f2d9</panel_attributes>
 + RegistrarMenu(dto): void
 + ActualizarMenu(int id, dto): void
 + EliminarMenu(int id): void
-+ GetMenus(): List&lt;Menu&gt;
++ GetMenus(): List&lt;MenuDTO&gt;
 - ArmarMenu(dto): Menu
 bg=#fff3c4</panel_attributes>
     <additional_attributes></additional_attributes>
@@ -812,7 +852,7 @@ bg=#d6e9ff</panel_attributes>
 + CambiarEstado(int id, estado): void
 + ClonarPresupuesto(int id): void
 + GenerarPdf(int id, ruta): void
-+ GetPresupuestos(): List&lt;Presupuesto&gt;
++ GetPresupuestos(): List&lt;PresupuestoDTO&gt;
 bg=#d9f2d9</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -822,7 +862,7 @@ bg=#d9f2d9</panel_attributes>
       <x>1120</x>
       <y>2242</y>
       <w>430</w>
-      <h>376</h>
+      <h>396</h>
     </coordinates>
     <panel_attributes>PresupuestoService
 -
@@ -843,7 +883,8 @@ bg=#d9f2d9</panel_attributes>
 - ValidarSuperposicion(presupuesto): void
 + ClonarPresupuesto(int id): void
 + GenerarPdf(int id, ruta): void
-+ GetPresupuestos(): List&lt;Presupuesto&gt;
++ GetPresupuestos(): List&lt;PresupuestoDTO&gt;
+- ADTO(presupuesto): PresupuestoDTO
 bg=#fff3c4</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -1036,7 +1077,7 @@ bg=#ffe0c2</panel_attributes>
       <x>40</x>
       <y>3334</y>
       <w>2320</w>
-      <h>250</h>
+      <h>300</h>
     </coordinates>
     <panel_attributes>Otras dependencias entre capas (además de las flechas de cada fila)
 -
@@ -1051,6 +1092,8 @@ bg=#ffe0c2</panel_attributes>
 • Repository: cada XRepository es Singleton y hereda de EfRepository&lt;T&gt;, que implementa IRepository&lt;T&gt; sobre AppDbContext (SQLite).
 • Model: Presupuesto referencia Cliente y LugarEvento y se compone de ServicioPresupuestado e ItemMenu (ver UML del Model).
 • Program.Main aplica las migraciones (Database.Migrate), carga DatosDePruebaService si la base está vacía y abre MenuPrincipalForm.
+• Service: los Get…() convierten las entidades en DTO con su Id (PresupuestoService.ADTO); la View y el Controller no conocen el Model.
+• Comun: enums compartidos (EstadoPresupuesto, Aptitud, TipoPlatillo); los usan todas las capas con using ...Comun y no dependen de ninguna.
 bg=#ffffff</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>
@@ -1080,34 +1123,34 @@ bg=#ffffff</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>229</x>
-      <y>371</y>
+      <y>450</y>
       <w>20</w>
-      <h>163</h>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>10;10;10;153</additional_attributes>
+    <additional_attributes>10;10;10;74</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>769</x>
-      <y>371</y>
+      <y>450</y>
       <w>20</w>
-      <h>163</h>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>10;10;10;153</additional_attributes>
+    <additional_attributes>10;10;10;74</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
       <x>1325</x>
-      <y>371</y>
+      <y>450</y>
       <w>20</w>
-      <h>163</h>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;..</panel_attributes>
-    <additional_attributes>10;10;10;153</additional_attributes>
+    <additional_attributes>10;10;10;74</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -1412,11 +1455,11 @@ m2=0..*</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1325</x>
-      <y>2608</y>
+      <y>2628</y>
       <w>20</w>
-      <h>108</h>
+      <h>88</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>10;98;10;10</additional_attributes>
+    <additional_attributes>10;78;10;10</additional_attributes>
   </element>
 </diagram>

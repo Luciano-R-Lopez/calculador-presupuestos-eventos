@@ -1,7 +1,6 @@
-using Menu = Luciano_Integrador_Evaluativo_Final.Model.Menu;
 using Luciano_Integrador_Evaluativo_Final.Controller;
 using Luciano_Integrador_Evaluativo_Final.Dto;
-using Luciano_Integrador_Evaluativo_Final.Model;
+using Luciano_Integrador_Evaluativo_Final.Comun;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -77,10 +76,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Carga el seleccionado en los campos y pasa a modo edición.
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            Menu? menu = null;
+            MenuDTO? menu = null;
             if (dataGridViewMenus.CurrentRow != null)
             {
-                menu = dataGridViewMenus.CurrentRow.DataBoundItem as Menu;
+                menu = dataGridViewMenus.CurrentRow.DataBoundItem as MenuDTO;
             }
 
             if (menu == null)
@@ -94,11 +93,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             textBoxNombreMenu.Text = menu.Nombre;
 
             // Se limpia la búsqueda para que se vean todos.
-            _idsPlatillosTildados.Clear();
-            foreach (Platillo platillo in menu.Platillos)
-            {
-                _idsPlatillosTildados.Add(platillo.Id);
-            }
+            _idsPlatillosTildados = new List<int>(menu.IdsPlatillos);
             textBoxBuscarPlatillo.Clear();
             FiltrarPlatillos();
 
@@ -115,10 +110,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Pide confirmación; el Service lo rechaza si está en uso.
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            Menu? seleccionado = null;
+            MenuDTO? seleccionado = null;
             if (dataGridViewMenus.CurrentRow != null)
             {
-                seleccionado = dataGridViewMenus.CurrentRow.DataBoundItem as Menu;
+                seleccionado = dataGridViewMenus.CurrentRow.DataBoundItem as MenuDTO;
             }
 
             if (seleccionado == null)
@@ -172,7 +167,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             string texto = textBoxBuscarPlatillo.Text.Trim().ToLower();
 
             checkedListBoxPlatillos.Items.Clear();
-            foreach (Platillo platillo in _platilloController.GetPlatillos())
+            foreach (PlatilloDTO platillo in _platilloController.GetPlatillos())
             {
                 if (texto == "" || platillo.Nombre.ToLower().Contains(texto))
                 {
@@ -193,7 +188,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             if (_filtrando)
                 return;
 
-            Platillo platillo = (Platillo)checkedListBoxPlatillos.Items[e.Index];
+            PlatilloDTO platillo = (PlatilloDTO)checkedListBoxPlatillos.Items[e.Index];
 
             if (e.NewValue == CheckState.Checked)
             {
@@ -214,7 +209,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             int cantidad = _platilloController.GetPlatillos().Count;
             new PlatilloForm().ShowDialog();
 
-            List<Platillo> platillos = _platilloController.GetPlatillos();
+            List<PlatilloDTO> platillos = _platilloController.GetPlatillos();
             for (int i = cantidad; i < platillos.Count; i++)
             {
                 _idsPlatillosTildados.Add(platillos[i].Id);
@@ -232,7 +227,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
         private void RefrescarGrilla()
         {
-            dataGridViewMenus.DataSource = new BindingList<Menu>(_controller.GetMenus());
+            dataGridViewMenus.DataSource = new BindingList<MenuDTO>(_controller.GetMenus());
         }
 
         private void LimpiarCampos()

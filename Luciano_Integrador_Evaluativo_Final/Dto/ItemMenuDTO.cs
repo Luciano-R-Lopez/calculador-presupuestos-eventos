@@ -4,17 +4,24 @@ using System.Collections.Generic;
 namespace Luciano_Integrador_Evaluativo_Final.Dto
 {
     // Menú elegido en un presupuesto: viaja el id del menú, no el objeto.
+    // NombreMenu solo se completa al volver del Service, para mostrarlo.
     internal class ItemMenuDTO
     {
         private int _cantidad;
         private int _idMenu;
         private bool _paraAdulto;
+        private string _nombreMenu;
 
-        public ItemMenuDTO(int cantidad, int idMenu, bool paraAdulto)
+        public ItemMenuDTO(int cantidad, int idMenu, bool paraAdulto) : this(cantidad, idMenu, paraAdulto, "")
+        {
+        }
+
+        public ItemMenuDTO(int cantidad, int idMenu, bool paraAdulto, string nombreMenu)
         {
             Cantidad = cantidad;
             IdMenu = idMenu;
             ParaAdulto = paraAdulto;
+            NombreMenu = nombreMenu;
         }
 
         public int Cantidad
@@ -31,6 +38,11 @@ namespace Luciano_Integrador_Evaluativo_Final.Dto
         {
             get { return _paraAdulto; }
             set { _paraAdulto = value; }
+        }
+        public string NombreMenu
+        {
+            get { return _nombreMenu; }
+            set { _nombreMenu = value; }
         }
     }
 }

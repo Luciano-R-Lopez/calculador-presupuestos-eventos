@@ -2,6 +2,7 @@ using Menu = Luciano_Integrador_Evaluativo_Final.Model.Menu;
 using Luciano_Integrador_Evaluativo_Final.Dto;
 using Luciano_Integrador_Evaluativo_Final.Model;
 using Luciano_Integrador_Evaluativo_Final.Repository;
+using Luciano_Integrador_Evaluativo_Final.Comun;
 using System;
 
 namespace Luciano_Integrador_Evaluativo_Final.Service
@@ -108,9 +109,22 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _repository.Delete(id);
         }
 
-        public List<Menu> GetMenus()
+        // La View recibe DTO, no entidades: los platillos van como ids.
+        public List<MenuDTO> GetMenus()
         {
-            return _repository.GetTodos();
+            List<MenuDTO> menus = new List<MenuDTO>();
+            foreach (Menu menu in _repository.GetTodos())
+            {
+                List<int> idsPlatillos = new List<int>();
+                foreach (Platillo platillo in menu.Platillos)
+                {
+                    idsPlatillos.Add(platillo.Id);
+                }
+
+                menus.Add(new MenuDTO(menu.Id, menu.Nombre, menu.MontoTotal, idsPlatillos,
+                    new List<Aptitud>(menu.Aptitudes)));
+            }
+            return menus;
         }
     }
 }

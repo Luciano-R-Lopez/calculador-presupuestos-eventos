@@ -1,5 +1,4 @@
 using Luciano_Integrador_Evaluativo_Final.Dto;
-using Luciano_Integrador_Evaluativo_Final.Model;
 using Luciano_Integrador_Evaluativo_Final.Service;
 using System;
 
@@ -31,7 +30,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Controller
             _service.EliminarLugarEvento(id);
         }
 
-        public List<LugarEvento> GetLugaresEvento()
+        public List<LugarEventoDTO> GetLugaresEvento()
         {
             return _service.GetLugaresEvento();
         }

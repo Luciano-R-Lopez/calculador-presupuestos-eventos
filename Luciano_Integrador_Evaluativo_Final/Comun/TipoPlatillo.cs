@@ -1,4 +1,4 @@
-namespace Luciano_Integrador_Evaluativo_Final.Model
+namespace Luciano_Integrador_Evaluativo_Final.Comun
 {
     // Tipo de platillo dentro del menú.
     internal enum TipoPlatillo

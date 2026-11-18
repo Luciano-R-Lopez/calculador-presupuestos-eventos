@@ -1,6 +1,6 @@
 using Luciano_Integrador_Evaluativo_Final.Dto;
-using Luciano_Integrador_Evaluativo_Final.Model;
 using Luciano_Integrador_Evaluativo_Final.Service;
+using Luciano_Integrador_Evaluativo_Final.Comun;
 using System;
 
 namespace Luciano_Integrador_Evaluativo_Final.Controller
@@ -59,7 +59,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Controller
             _service.EliminarPresupuesto(id);
         }
 
-        public List<Presupuesto> GetPresupuestos()
+        public List<PresupuestoDTO> GetPresupuestos()
         {
             return _service.GetPresupuestos();
         }

@@ -1,7 +1,6 @@
-using Menu = Luciano_Integrador_Evaluativo_Final.Model.Menu;
 using Luciano_Integrador_Evaluativo_Final.Controller;
 using Luciano_Integrador_Evaluativo_Final.Dto;
-using Luciano_Integrador_Evaluativo_Final.Model;
+using Luciano_Integrador_Evaluativo_Final.Comun;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -102,7 +101,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
             // Quita los tildes de servicios que ya no existen.
             List<int> idsExistentes = new List<int>();
-            foreach (ServicioAdicional servicio in _servicioController.GetServiciosAdicionales())
+            foreach (ServicioAdicionalDTO servicio in _servicioController.GetServiciosAdicionales())
             {
                 idsExistentes.Add(servicio.Id);
             }
@@ -122,7 +121,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // 0 si no hay nada elegido.
         private int IdClienteElegido()
         {
-            Cliente? cliente = comboBoxCliente.SelectedItem as Cliente;
+            ClienteDTO? cliente = comboBoxCliente.SelectedItem as ClienteDTO;
             if (cliente == null)
                 return 0;
             return cliente.Id;
@@ -130,7 +129,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
         private int IdLugarElegido()
         {
-            LugarEvento? lugar = comboBoxLugar.SelectedItem as LugarEvento;
+            LugarEventoDTO? lugar = comboBoxLugar.SelectedItem as LugarEventoDTO;
             if (lugar == null)
                 return 0;
             return lugar.Id;
@@ -138,7 +137,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
         private int IdMenuElegido()
         {
-            Menu? menu = comboBoxMenu.SelectedItem as Menu;
+            MenuDTO? menu = comboBoxMenu.SelectedItem as MenuDTO;
             if (menu == null)
                 return 0;
             return menu.Id;
@@ -148,7 +147,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private void SeleccionarCliente(int id)
         {
             int indice = -1;
-            List<Cliente> clientes = _clienteController.GetClientes();
+            List<ClienteDTO> clientes = _clienteController.GetClientes();
             for (int i = 0; i < clientes.Count; i++)
             {
                 if (clientes[i].Id == id)
@@ -160,7 +159,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private void SeleccionarLugar(int id)
         {
             int indice = -1;
-            List<LugarEvento> lugares = _lugarController.GetLugaresEvento();
+            List<LugarEventoDTO> lugares = _lugarController.GetLugaresEvento();
             for (int i = 0; i < lugares.Count; i++)
             {
                 if (lugares[i].Id == id)
@@ -172,7 +171,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private void SeleccionarMenu(int id)
         {
             int indice = -1;
-            List<Menu> menus = _menuController.GetMenus();
+            List<MenuDTO> menus = _menuController.GetMenus();
             for (int i = 0; i < menus.Count; i++)
             {
                 if (menus[i].Id == id)
@@ -187,7 +186,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _cargando = true;
 
             List<object> opciones = new List<object>();
-            foreach (Cliente cliente in _clienteController.GetClientes())
+            foreach (ClienteDTO cliente in _clienteController.GetClientes())
             {
                 opciones.Add(cliente);
             }
@@ -212,7 +211,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _cargando = true;
 
             List<object> opciones = new List<object>();
-            foreach (LugarEvento lugar in _lugarController.GetLugaresEvento())
+            foreach (LugarEventoDTO lugar in _lugarController.GetLugaresEvento())
             {
                 opciones.Add(lugar);
             }
@@ -237,7 +236,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             _cargando = true;
 
             List<object> opciones = new List<object>();
-            foreach (Menu menu in _menuController.GetMenus())
+            foreach (MenuDTO menu in _menuController.GetMenus())
             {
                 opciones.Add(menu);
             }
@@ -387,14 +386,14 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         {
             // "as" da null si no es de ese tipo (ej. la opción de alta). Id 0 = nada elegido.
             int idCliente = 0;
-            Cliente? cliente = comboBoxCliente.SelectedItem as Cliente;
+            ClienteDTO? cliente = comboBoxCliente.SelectedItem as ClienteDTO;
             if (cliente != null)
             {
                 idCliente = cliente.Id;
             }
 
             int idLugar = 0;
-            LugarEvento? lugar = comboBoxLugar.SelectedItem as LugarEvento;
+            LugarEventoDTO? lugar = comboBoxLugar.SelectedItem as LugarEventoDTO;
             if (lugar != null)
             {
                 idLugar = lugar.Id;
@@ -438,7 +437,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
             // Copia de la lista: si la del repositorio cambiara por debajo, la grilla pediría filas inexistentes.
             dataGridViewPresupuestos.DataSource = null;
-            dataGridViewPresupuestos.DataSource = new BindingList<Presupuesto>(new List<Presupuesto>(_controller.GetPresupuestos()));
+            dataGridViewPresupuestos.DataSource = new BindingList<PresupuestoDTO>(new List<PresupuestoDTO>(_controller.GetPresupuestos()));
 
             // Deja marcada la fila en vista, o ninguna (la grilla elige sola la primera).
             MarcarFila(_idViendo);
@@ -464,7 +463,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             dataGridViewPresupuestos.ClearSelection();
             foreach (DataGridViewRow fila in dataGridViewPresupuestos.Rows)
             {
-                Presupuesto? presupuesto = fila.DataBoundItem as Presupuesto;
+                PresupuestoDTO? presupuesto = fila.DataBoundItem as PresupuestoDTO;
                 if (presupuesto != null && presupuesto.Id == id)
                 {
                     dataGridViewPresupuestos.CurrentCell = fila.Cells[0];
@@ -476,7 +475,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
         private void btnAgregarItem_Click(object sender, EventArgs e)
         {
-            Menu? menu = comboBoxMenu.SelectedItem as Menu;
+            MenuDTO? menu = comboBoxMenu.SelectedItem as MenuDTO;
             if (menu == null)
             {
                 MessageBox.Show("Seleccione un menú.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -538,7 +537,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Carga el seleccionado y pasa a modo edición.
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            Presupuesto? seleccionado = ObtenerSeleccionado();
+            PresupuestoDTO? seleccionado = ObtenerSeleccionado();
             if (seleccionado == null)
             {
                 MessageBox.Show("Seleccione un presupuesto de la grilla.", "Error",
@@ -575,37 +574,26 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         }
 
         // Lo usan Editar y la vista.
-        private void CargarEnFormulario(Presupuesto seleccionado)
+        private void CargarEnFormulario(PresupuestoDTO seleccionado)
         {
             dateTimePickerEvento.Value = seleccionado.FechaEvento;
             dateTimePickerHora.Value = seleccionado.FechaEvento;
             numericUpDownHoras.Value = seleccionado.CantidadHoras;
 
-            int idCliente = 0;
-            if (seleccionado.Cliente != null)
-                idCliente = seleccionado.Cliente.Id;
-            SeleccionarCliente(idCliente);
-
-            int idLugar = 0;
-            if (seleccionado.Lugar != null)
-                idLugar = seleccionado.Lugar.Id;
-            SeleccionarLugar(idLugar);
+            SeleccionarCliente(seleccionado.IdCliente);
+            SeleccionarLugar(seleccionado.IdLugar);
 
             // Se limpia la búsqueda para que se vean todos.
-            _idsServiciosTildados.Clear();
-            foreach (ServicioPresupuestado renglon in seleccionado.ServiciosAdicionales)
-            {
-                _idsServiciosTildados.Add(renglon.Servicio.Id);
-            }
+            _idsServiciosTildados = new List<int>(seleccionado.IdsServiciosAdicionales);
             textBoxBuscarServicio.Clear();
             FiltrarServicios();
 
             _items.Clear();
             listBoxItems.Items.Clear();
-            foreach (ItemMenu item in seleccionado.Menus)
+            foreach (ItemMenuDTO item in seleccionado.Menus)
             {
-                _items.Add(new ItemMenuDTO(item.Cantidad, item.Item.Id, item.ParaAdulto));
-                listBoxItems.Items.Add(TextoItem(item.Item.Nombre, item.Cantidad, item.ParaAdulto));
+                _items.Add(new ItemMenuDTO(item.Cantidad, item.IdMenu, item.ParaAdulto));
+                listBoxItems.Items.Add(TextoItem(item.NombreMenu, item.Cantidad, item.ParaAdulto));
             }
         }
 
@@ -624,14 +612,14 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             if (_idEditando != 0)
                 return;
 
-            Presupuesto? seleccionado = ObtenerSeleccionado();
+            PresupuestoDTO? seleccionado = ObtenerSeleccionado();
             if (seleccionado == null || seleccionado.Id == _idViendo)
                 return;
 
             VerPresupuesto(seleccionado);
         }
 
-        private void VerPresupuesto(Presupuesto seleccionado)
+        private void VerPresupuesto(PresupuestoDTO seleccionado)
         {
             // El borrador se guarda solo al entrar a la vista.
             if (_idViendo == 0)
@@ -731,7 +719,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Pide confirmación; el Service lo rechaza si está pagado.
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            Presupuesto? seleccionado = ObtenerSeleccionado();
+            PresupuestoDTO? seleccionado = ObtenerSeleccionado();
             if (seleccionado == null)
             {
                 MessageBox.Show("Seleccione un presupuesto de la grilla.", "Error",
@@ -783,20 +771,20 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         }
 
         // null si no hay ninguna.
-        private Presupuesto? ObtenerSeleccionado()
+        private PresupuestoDTO? ObtenerSeleccionado()
         {
             // SelectedRows y no CurrentRow: SelectionChanged llega antes de que se actualice CurrentRow.
             if (dataGridViewPresupuestos.SelectedRows.Count == 0)
             {
                 return null;
             }
-            return dataGridViewPresupuestos.SelectedRows[0].DataBoundItem as Presupuesto;
+            return dataGridViewPresupuestos.SelectedRows[0].DataBoundItem as PresupuestoDTO;
         }
 
         // El Controller rechaza los cambios de estado no permitidos.
         private void btnCambiarEstado_Click(object sender, EventArgs e)
         {
-            Presupuesto? seleccionado = ObtenerSeleccionado();
+            PresupuestoDTO? seleccionado = ObtenerSeleccionado();
             if (seleccionado == null)
             {
                 MessageBox.Show("Seleccione un presupuesto de la grilla.", "Error",
@@ -817,7 +805,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
         private void btnClonar_Click(object sender, EventArgs e)
         {
-            Presupuesto? seleccionado = ObtenerSeleccionado();
+            PresupuestoDTO? seleccionado = ObtenerSeleccionado();
             if (seleccionado == null)
             {
                 MessageBox.Show("Seleccione un presupuesto de la grilla.", "Error",
@@ -838,7 +826,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
 
         private void btnGenerarPdf_Click(object sender, EventArgs e)
         {
-            Presupuesto? seleccionado = ObtenerSeleccionado();
+            PresupuestoDTO? seleccionado = ObtenerSeleccionado();
             if (seleccionado == null)
             {
                 MessageBox.Show("Seleccione un presupuesto de la grilla.", "Error",
@@ -872,7 +860,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             string texto = textBoxBuscarServicio.Text.Trim().ToLower();
 
             checkedListBoxServicios.Items.Clear();
-            foreach (ServicioAdicional servicio in _servicioController.GetServiciosAdicionales())
+            foreach (ServicioAdicionalDTO servicio in _servicioController.GetServiciosAdicionales())
             {
                 if (texto == "" || servicio.Nombre.ToLower().Contains(texto))
                 {
@@ -893,7 +881,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
             if (_filtrando)
                 return;
 
-            ServicioAdicional servicio = (ServicioAdicional)checkedListBoxServicios.Items[e.Index];
+            ServicioAdicionalDTO servicio = (ServicioAdicionalDTO)checkedListBoxServicios.Items[e.Index];
             if (e.NewValue == CheckState.Checked)
             {
                 if (!_idsServiciosTildados.Contains(servicio.Id))

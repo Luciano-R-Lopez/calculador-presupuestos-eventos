@@ -68,9 +68,15 @@ namespace Luciano_Integrador_Evaluativo_Final.Service
             _repository.Delete(id);
         }
 
-        public List<Cliente> GetClientes()
+        // La View recibe DTO, no entidades.
+        public List<ClienteDTO> GetClientes()
         {
-            return _repository.GetTodos();
+            List<ClienteDTO> clientes = new List<ClienteDTO>();
+            foreach (Cliente cliente in _repository.GetTodos())
+            {
+                clientes.Add(new ClienteDTO(cliente.Id, cliente.Nombre, cliente.Telefono, cliente.Email));
+            }
+            return clientes;
         }
     }
 }

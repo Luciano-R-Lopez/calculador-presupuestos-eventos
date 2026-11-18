@@ -263,7 +263,7 @@ bg=#d9f2d9</panel_attributes>
       <x>80</x>
       <y>1190</y>
       <w>1100</w>
-      <h>178</h>
+      <h>196</h>
     </coordinates>
     <panel_attributes>Notas
 -
@@ -272,8 +272,9 @@ bg=#d9f2d9</panel_attributes>
 • Presupuesto.CalcularMonto = PrecioLugar + monto de cada renglón (servicios, menús y extras).
 • Los constructores privados sin parámetros los usa Entity Framework.
 • ItemsExtra (otros IItemPresupuesto) no se guarda en la base de datos.
+• Las enumeraciones (EstadoPresupuesto, Aptitud, TipoPlatillo) están en la carpeta Comun: las comparten todas las capas.
 -
-Colores: azul = Presupuesto · amarillo = renglones · gris = catálogo · verde = enumeraciones · naranja = interfaz
+Colores: azul = Presupuesto · amarillo = renglones · gris = catálogo · verde = enumeraciones (Comun) · naranja = interfaz
 bg=#ffffff</panel_attributes>
     <additional_attributes></additional_attributes>
   </element>

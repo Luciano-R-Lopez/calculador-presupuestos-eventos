@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +77,7 @@ namespace Luciano_Integrador_Evaluativo_Final.Repository
         // Vuelve el contexto al estado anterior a los cambios que fallaron.
         private void DescartarCambios()
         {
-            foreach (var entrada in _contexto.ChangeTracker.Entries().ToList())
+            foreach (EntityEntry entrada in _contexto.ChangeTracker.Entries().ToList())
             {
                 if (entrada.State == EntityState.Added)
                 {

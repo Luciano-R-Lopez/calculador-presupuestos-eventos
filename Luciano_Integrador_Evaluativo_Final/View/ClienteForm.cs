@@ -1,6 +1,5 @@
 ﻿using Luciano_Integrador_Evaluativo_Final.Controller;
 using Luciano_Integrador_Evaluativo_Final.Dto;
-using Luciano_Integrador_Evaluativo_Final.Model;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -62,10 +61,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Carga el seleccionado en los campos y pasa a modo edición.
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            Cliente? cliente = null;
+            ClienteDTO? cliente = null;
             if (dataGridViewClientes.CurrentRow != null)
             {
-                cliente = dataGridViewClientes.CurrentRow.DataBoundItem as Cliente;
+                cliente = dataGridViewClientes.CurrentRow.DataBoundItem as ClienteDTO;
             }
 
             if (cliente == null)
@@ -87,10 +86,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Pide confirmación; el Service lo rechaza si está en uso.
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            Cliente? seleccionado = null;
+            ClienteDTO? seleccionado = null;
             if (dataGridViewClientes.CurrentRow != null)
             {
-                seleccionado = dataGridViewClientes.CurrentRow.DataBoundItem as Cliente;
+                seleccionado = dataGridViewClientes.CurrentRow.DataBoundItem as ClienteDTO;
             }
 
             if (seleccionado == null)
@@ -145,7 +144,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private void RefrescarGrilla()
         {
             // BindingList: con List<T> la grilla fallaba al hacer clic en el encabezado.
-            dataGridViewClientes.DataSource = new BindingList<Cliente>(_controller.GetClientes());
+            dataGridViewClientes.DataSource = new BindingList<ClienteDTO>(_controller.GetClientes());
         }
 
         private void LimpiarCampos()

@@ -21,24 +21,27 @@ Para empezar con la base vacía, cerrar la app y borrar `presupuestos.db` (en `b
 ## Arquitectura en capas
 
 Cada pedido del usuario baja por las capas y la respuesta vuelve por el mismo camino. Cada capa solo
-conoce a la de abajo.
+conoce a la de abajo. Entre la View y el Service solo viajan DTO, en los dos sentidos: la View no conoce
+las clases del Model.
 
 ```mermaid
 flowchart TD
-    V["View<br/>(formularios WinForms)"] -->|DTO| C["Controller"]
-    C -->|DTO| S["Service<br/>(reglas de negocio)"]
+    V["View<br/>(formularios WinForms)"] <-->|DTO| C["Controller"]
+    C <-->|DTO| S["Service<br/>(reglas de negocio)"]
     S -->|objetos del Model| R["Repository<br/>(Entity Framework)"]
     R --> DB[("SQLite<br/>presupuestos.db")]
+    K["Comun<br/>(enums compartidos)"] -.- V & C & S & R
 ```
 
 | Capa | Carpeta | Qué hace | Qué NO hace |
 |---|---|---|---|
-| **View** | `View/` | Muestra pantallas, lee lo que escribe el usuario y arma un DTO. | No calcula ni valida reglas de negocio. |
+| **View** | `View/` | Muestra pantallas, lee lo que escribe el usuario y arma un DTO. Muestra los DTO que recibe. | No calcula ni valida reglas de negocio. No conoce el Model. |
 | **Controller** | `Controller/` | Recibe el pedido de la View y se lo pasa al Service. | No tiene lógica propia. |
-| **Service** | `Service/` | Valida, aplica las reglas de negocio y arma los objetos del modelo. | No sabe cómo se guardan los datos. |
+| **Service** | `Service/` | Valida, aplica las reglas de negocio y arma los objetos del modelo. Para la View, convierte las entidades en DTO. | No sabe cómo se guardan los datos. |
 | **Repository** | `Repository/` | Guarda y lee de la base de datos. | No conoce reglas de negocio. |
 | **Model** | `Model/` | Clases del dominio (Cliente, Presupuesto, Menú...). Algunas tienen lógica propia (calcular su monto, cambiar de estado). | No conoce la base ni las pantallas. |
-| **Dto** | `Dto/` | Datos que viajan del formulario al Service, sin id ni lógica. Las relaciones viajan como ids. | — |
+| **Dto** | `Dto/` | Datos que viajan entre la View y el Service, sin lógica. De ida (formulario → Service) sin id; de vuelta (Service → View) con su `Id` y lo necesario para mostrar. Las relaciones viajan como ids. | — |
+| **Comun** | `Comun/` | Enums compartidos por todas las capas: `EstadoPresupuesto`, `Aptitud`, `TipoPlatillo`. | No depende de ninguna capa. |
 
 ---
 
@@ -55,7 +58,8 @@ Seguir este caso es la forma más rápida de entender cómo se conectan las piez
      (ver *Precios congelados*), arma los ítems de menú con `ItemMenuService` y calcula el monto.
 4. **`Repository/PresupuestoRepository.cs`** → `Agregar(presupuesto)` (heredado de `EfRepository`) lo
    inserta junto con sus renglones; la base le asigna el id.
-5. La View refresca la grilla y limpia el formulario.
+5. La View refresca la grilla y limpia el formulario. La grilla se llena con `GetPresupuestos()`, que
+   devuelve `PresupuestoDTO` con su `Id`, los nombres de cliente y lugar, el estado y el monto guardado.
 
 El monto que se ve "al instante" mientras se completa el formulario usa el mismo `Construir`, pero sin
 guardar (`PresupuestoService.CalcularMonto`).

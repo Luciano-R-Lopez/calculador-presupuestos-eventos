@@ -1,6 +1,5 @@
 ﻿using Luciano_Integrador_Evaluativo_Final.Controller;
 using Luciano_Integrador_Evaluativo_Final.Dto;
-using Luciano_Integrador_Evaluativo_Final.Model;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -69,10 +68,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Carga el seleccionado en los campos y pasa a modo edición.
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            LugarEvento? lugar = null;
+            LugarEventoDTO? lugar = null;
             if (dataGridViewLugares.CurrentRow != null)
             {
-                lugar = dataGridViewLugares.CurrentRow.DataBoundItem as LugarEvento;
+                lugar = dataGridViewLugares.CurrentRow.DataBoundItem as LugarEventoDTO;
             }
 
             if (lugar == null)
@@ -93,10 +92,10 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         // Pide confirmación; el Service lo rechaza si está en uso.
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            LugarEvento? seleccionado = null;
+            LugarEventoDTO? seleccionado = null;
             if (dataGridViewLugares.CurrentRow != null)
             {
-                seleccionado = dataGridViewLugares.CurrentRow.DataBoundItem as LugarEvento;
+                seleccionado = dataGridViewLugares.CurrentRow.DataBoundItem as LugarEventoDTO;
             }
 
             if (seleccionado == null)
@@ -151,7 +150,7 @@ namespace Luciano_Integrador_Evaluativo_Final.View
         private void RefrescarGrilla()
         {
             dataGridViewLugares.DataSource =
-                new BindingList<LugarEvento>(_controller.GetLugaresEvento());
+                new BindingList<LugarEventoDTO>(_controller.GetLugaresEvento());
         }
 
         private void LimpiarCampos()
